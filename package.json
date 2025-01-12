@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@tabler/icons-react": "^3.28.1",
+    "antd": "^5.23.0",
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
     "framer-motion": "^11.17.0",

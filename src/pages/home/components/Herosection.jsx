@@ -1,6 +1,9 @@
+"use client"
+
 import React, { useState, useEffect } from 'react';
 import { FileText, BarChart2, Zap, Binary, Cpu, Network } from 'lucide-react';
 import { motion } from "framer-motion";
+import {Link} from 'react-router-dom';
 
 const AIResumeHero = () => {
   const [animationStep, setAnimationStep] = useState(0);
@@ -22,17 +25,13 @@ const AIResumeHero = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center p-4 overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50">
-      {/* Animated background grid */}
-      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#e5e7eb_1px,transparent_1px),linear-gradient(to_bottom,#e5e7eb_1px,transparent_1px)] bg-[size:24px_24px] opacity-30"></div>
-      
+    <div className="min-h-screen flex flex-col justify-center items-center p-4 overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50 z-10">
       {/* Floating orbs */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
         <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
         <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
       </div>
-
       <div className={`max-w-4xl w-full space-y-8 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
         {/* Floating icons */}
         <div className="absolute top-20 left-10 animate-pulse">
@@ -79,13 +78,7 @@ const AIResumeHero = () => {
           </div>
         </div>
 
-        <div className="flex justify-center">
-          <button className="group relative bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3 px-8 rounded-full 
-                           hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-300 transform hover:scale-105">
-            <span className="relative z-50">Get Started</span>
-            <div className="absolute inset-0 -z-10 bg-white rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-          </button>
-        </div>
+        
 
         <div className="mt-16 relative">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-200 via-purple-200 to-indigo-200 filter blur-3xl opacity-50 animate-pulse"></div>
@@ -119,3 +112,4 @@ const AIResumeHero = () => {
 };
 
 export default AIResumeHero;
+

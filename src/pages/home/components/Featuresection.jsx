@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Brain, PuzzleIcon as PuzzlePiece, BarChart, Sparkles, Binary, Beaker } from 'lucide-react';
+import { Brain, PuzzleIcon as PuzzlePiece, BarChart, Binary, Beaker } from 'lucide-react';
 
 const features = [
   { 
@@ -36,7 +36,6 @@ const FeatureCard = ({ icon: Icon, title, description, gradient, delay }) => {
       whileHover={{ y: -5 }}
     >
       {/* Animated gradient background */}
-      <div className={`absolute inset-0 bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-5 blur-xl transition-opacity duration-500`} />
       
       {/* Card content */}
       <div className="relative bg-white/80 backdrop-blur-xl rounded-lg p-8 border border-gray-100 shadow-xl h-full">
