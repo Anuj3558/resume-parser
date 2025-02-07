@@ -8,6 +8,7 @@ import Home from './pages/home/page';
 import { Footer, Navbar } from './components/Navbar';
 import ResultsDisplay from './pages/Result/Result';
 import ProtectedRoute from './components/ProtectedRoute';
+import JobPositions from './pages/Dashboard/SelectJobPostion';
 
 const PageTransition = ({ children }) => {
   const pageVariants = {
@@ -85,7 +86,16 @@ const AnimatedRoutes = () => {
               </PageTransition>
             </ProtectedRoute>
           } 
-        />
+        /><Route 
+        path="/res/selectjob" 
+        element={
+          <ProtectedRoute>
+            <PageTransition>
+              <JobPositions />
+            </PageTransition>
+          </ProtectedRoute>
+        } 
+      />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </AnimatePresence>

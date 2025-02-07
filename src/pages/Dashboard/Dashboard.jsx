@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom"
-import { Upload, FileText, Loader2, XCircle, CheckCircle2, AlertCircle, Trash2, ArrowRight } from 'lucide-react'
-import { notification } from 'antd'
+import { Upload, FileText, Loader2, XCircle, Trash2, ArrowRight } from "lucide-react"
+import { notification } from "antd"
 import axios from "axios"
 import { GlassCard } from "./components/glowcard"
 import { GlowButton } from "./components/glowbutton"
@@ -27,11 +27,11 @@ const UploadPage = () => {
       setUploadedFiles(response.data.files)
     } catch (error) {
       api.error({
-        message: 'Error',
-        description: 'Failed to fetch uploaded files',
-        placement: 'topRight',
+        message: "Error",
+        description: "Failed to fetch uploaded files",
+        placement: "topRight",
       })
-      console.error('Error fetching files:', error)
+      console.error("Error fetching files:", error)
     }
   }
 
@@ -53,20 +53,20 @@ const UploadPage = () => {
   }
 
   const validateFiles = (fileList) => {
-    return Array.from(fileList).filter(file => {
-      if (file.type !== 'application/pdf') {
+    return Array.from(fileList).filter((file) => {
+      if (file.type !== "application/pdf") {
         api.warning({
-          message: 'Invalid File Type',
-          description: 'Only PDF files are allowed',
-          placement: 'topRight',
+          message: "Invalid File Type",
+          description: "Only PDF files are allowed",
+          placement: "topRight",
         })
         return false
       }
       if (file.size > 10 * 1024 * 1024) {
         api.warning({
-          message: 'File Too Large',
-          description: 'File size should not exceed 10MB',
-          placement: 'topRight',
+          message: "File Too Large",
+          description: "File size should not exceed 10MB",
+          placement: "topRight",
         })
         return false
       }
@@ -78,43 +78,43 @@ const UploadPage = () => {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
-    
+
     const droppedFiles = validateFiles(e.dataTransfer.files)
     if (droppedFiles.length === 0) return
-    
-    setFiles(prevFiles => [...prevFiles, ...droppedFiles])
+
+    setFiles((prevFiles) => [...prevFiles, ...droppedFiles])
     api.success({
-      message: 'Files Added',
-      description: 'Files have been added successfully',
-      placement: 'topRight',
+      message: "Files Added",
+      description: "Files have been added successfully",
+      placement: "topRight",
     })
   }
 
   const handleFileSelect = (e) => {
     const selectedFiles = validateFiles(e.target.files)
     if (selectedFiles.length === 0) return
-    
-    setFiles(prevFiles => [...prevFiles, ...selectedFiles])
+
+    setFiles((prevFiles) => [...prevFiles, ...selectedFiles])
     api.success({
-      message: 'Files Added',
-      description: 'Files have been added successfully',
-      placement: 'topRight',
+      message: "Files Added",
+      description: "Files have been added successfully",
+      placement: "topRight",
     })
   }
 
   const removeFile = (indexToRemove) => {
     setFiles(files.filter((_, index) => index !== indexToRemove))
     api.info({
-      message: 'File Removed',
-      description: 'File has been removed from the upload list',
-      placement: 'topRight',
+      message: "File Removed",
+      description: "File has been removed from the upload list",
+      placement: "topRight",
     })
   }
 
   const simulateProgress = () => {
     setUploadProgress(0)
     const interval = setInterval(() => {
-      setUploadProgress(prev => {
+      setUploadProgress((prev) => {
         if (prev >= 90) {
           clearInterval(interval)
           return 90
@@ -128,9 +128,9 @@ const UploadPage = () => {
   const handleUpload = async () => {
     if (files.length === 0) {
       api.warning({
-        message: 'No Files',
-        description: 'Please select files to upload',
-        placement: 'topRight',
+        message: "No Files",
+        description: "Please select files to upload",
+        placement: "topRight",
       })
       return
     }
@@ -139,24 +139,24 @@ const UploadPage = () => {
     const progressInterval = simulateProgress()
 
     const formData = new FormData()
-    files.forEach(file => formData.append('pdf', file))
+    files.forEach((file) => formData.append("pdf", file))
 
     try {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/files/upload`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-        }
+          "Content-Type": "multipart/form-data",
+        },
       })
 
       clearInterval(progressInterval)
       setUploadProgress(100)
-      setUploadedFiles(prev => [...prev, ...response.data.files])
+      setUploadedFiles((prev) => [...prev, ...response.data.files])
       setFiles([])
-      
+
       api.success({
-        message: 'Upload Success',
-        description: 'Files have been uploaded successfully',
-        placement: 'topRight',
+        message: "Upload Success",
+        description: "Files have been uploaded successfully",
+        placement: "topRight",
       })
 
       setTimeout(() => {
@@ -165,11 +165,11 @@ const UploadPage = () => {
     } catch (error) {
       clearInterval(progressInterval)
       api.error({
-        message: 'Upload Failed',
-        description: 'Failed to upload files. Please try again.',
-        placement: 'topRight',
+        message: "Upload Failed",
+        description: "Failed to upload files. Please try again.",
+        placement: "topRight",
       })
-      console.error('Upload error:', error)
+      console.error("Upload error:", error)
     } finally {
       setUploading(false)
     }
@@ -178,32 +178,36 @@ const UploadPage = () => {
   const handleDeleteFile = async (filename) => {
     try {
       await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/files/${filename}`)
-      setUploadedFiles(prev => prev.filter(file => file.name !== filename))
+      setUploadedFiles((prev) => prev.filter((file) => file.name !== filename))
       api.success({
-        message: 'File Deleted',
-        description: 'File has been deleted successfully',
-        placement: 'topRight',
+        message: "File Deleted",
+        description: "File has been deleted successfully",
+        placement: "topRight",
       })
     } catch (error) {
       api.error({
-        message: 'Delete Failed',
-        description: 'Failed to delete file',
-        placement: 'topRight',
+        message: "Delete Failed",
+        description: "Failed to delete file",
+        placement: "topRight",
       })
-      console.error('Delete error:', error)
+      console.error("Delete error:", error)
     }
   }
 
-  const handleProcessResumes = () => {
+  const handleProcessInternResumes = () => {
     navigate("/res")
   }
 
+  const handleProcessJobResumes = () => {
+    navigate("/res/selectjob")
+  }
+
   const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes'
+    if (bytes === 0) return "0 Bytes"
     const k = 1024
-    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const sizes = ["Bytes", "KB", "MB", "GB"]
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
   }
 
   return (
@@ -224,9 +228,7 @@ const UploadPage = () => {
             <h1 className="text-5xl  p  -11 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
               Resume Processing System
             </h1>
-            <p className="text-lg text-gray-600">
-              Upload your resumes and manage your documents efficiently
-            </p>
+            <p className="text-lg text-gray-600">Upload your resumes and manage your documents efficiently</p>
           </motion.div>
 
           <GlassCard>
@@ -267,11 +269,7 @@ const UploadPage = () => {
               </motion.div>
 
               {files.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="mt-6 space-y-4"
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6 space-y-4">
                   <div className="space-y-4">
                     {files.map((file, index) => (
                       <motion.div
@@ -285,9 +283,7 @@ const UploadPage = () => {
                         <div className="flex items-center space-x-3">
                           <FileText className="h-5 w-5 text-blue-500" />
                           <span className="font-medium">{file.name}</span>
-                          <span className="text-sm text-gray-500">
-                            {formatFileSize(file.size)}
-                          </span>
+                          <span className="text-sm text-gray-500">{formatFileSize(file.size)}</span>
                         </div>
                         <motion.button
                           whileHover={{ scale: 1.1 }}
@@ -316,11 +312,7 @@ const UploadPage = () => {
                   )}
 
                   <div className="flex space-x-4">
-                    <GlowButton
-                      onClick={handleUpload}
-                      disabled={uploading}
-                      className="flex-1"
-                    >
+                    <GlowButton onClick={handleUpload} disabled={uploading} className="flex-1">
                       {uploading ? (
                         <>
                           <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5 inline" />
@@ -330,7 +322,6 @@ const UploadPage = () => {
                         "Upload Files"
                       )}
                     </GlowButton>
-                    
                   </div>
                 </motion.div>
               )}
@@ -361,14 +352,13 @@ const UploadPage = () => {
                       <div className="flex space-x-3">
                         <GlowButton
                           variant="secondary"
-                          onClick={() => window.open(`${process.env.REACT_APP_BACKEND_URL}/files/pdf/${file.name}`, '_blank')}
+                          onClick={() =>
+                            window.open(`${process.env.REACT_APP_BACKEND_URL}/files/pdf/${file.name}`, "_blank")
+                          }
                         >
                           View
                         </GlowButton>
-                        <GlowButton
-                          variant="danger"
-                          onClick={() => handleDeleteFile(file.name)}
-                        >
+                        <GlowButton variant="danger" onClick={() => handleDeleteFile(file.name)}>
                           <Trash2 className="h-4 w-4" />
                         </GlowButton>
                       </div>
@@ -376,28 +366,32 @@ const UploadPage = () => {
                   ))}
                 </div>
               ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-center py-6"
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-6">
                   <FileText className="mx-auto h-12 w-12 text-gray-400" />
                   <h3 className="mt-2 text-sm font-medium text-gray-900">No files uploaded</h3>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Upload your first resume to get started
-                  </p>
+                  <p className="mt-1 text-sm text-gray-500">Upload your first resume to get started</p>
                 </motion.div>
               )}
             </div>
           </GlassCard>
-          <GlowButton
-                      onClick={handleProcessResumes}
-                      variant="primary"
-                      className="flex items-center space-x-2"
-                    >
-                      <span>Process Resumes</span>
-                      <ArrowRight className="h-4 w-4" />
-                    </GlowButton>
+          <div className="flex space-x-4">
+            <GlowButton
+              onClick={handleProcessInternResumes}
+              variant="primary"
+              className="flex items-center space-x-2 flex-1"
+            >
+              <span>Process Intern Resumes</span>
+              <ArrowRight className="h-4 w-4" />
+            </GlowButton>
+            <GlowButton
+              onClick={handleProcessJobResumes}
+              variant="secondary"
+              className="flex items-center space-x-2 flex-1"
+            >
+              <span>Process Job Resumes</span>
+              <ArrowRight className="h-4 w-4" />
+            </GlowButton>
+          </div>
         </motion.div>
       </div>
     </>
