@@ -10,6 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import JobPositions from './pages/Dashboard/SelectJobPostion';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import DashboardLayout from './pages/Admin/DashboardLayout';
+import UserDashboardLayout from './pages/user/UserDashboardLayout';
 
 const PageTransition = ({ children }) => {
   const pageVariants = {
@@ -47,7 +48,7 @@ const AnimatedRoutes = () => {
 
 function App() {
   const location = useLocation();
-  const hideNavAndFooter = location.pathname === "/admin-dashboard" || location.pathname === "/dashboard";
+  const hideNavAndFooter = location.pathname === "/admin-dashboard" || location.pathname === "/user-dashboard";
 
   return (
     <div className="flex flex-col min-h-screen">

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Header } from './components/Header';
-import AdminDashboard from './AdminDashboard';
-import  UserManagement  from './UserManagement';
+import { Sidebar } from './compoenets/Sidebar';
+import UserDashboard from './compoenets/UserDashboard';
+import JobDescriptions from './compoenets/JobDescriptions';
+import JobCategories from './compoenets/JobCategories';
+import Candidates from './compoenets/Candidates';
+import Analytics from './compoenets/Analytics';
 
-import { Sidebar } from './components/Sidebar';
-import ResumeMatching from './ResumeMatching';
-import { JobDescriptions } from './components/JobDescriptions';
 
 
 
@@ -16,13 +16,13 @@ function UserDashboardLayout() {
     <div className="flex h-screen bg-gray-100 ">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
         <main className="flex-1 overflow-y-auto p-4">
-          {activeTab === 'userdashboard' && <AdminDashboard />}
-          {activeTab === 'jobsdesc' && <UserManagement />}
-          {activeTab === 'jobcat' && <JobDescriptions />}
-          {activeTab === 'candidates' && <ResumeMatching />}
-          {activeTab === 'analytics' && <ResumeMatching />}
+          {activeTab === 'userdashboard' && <UserDashboard />}
+          {activeTab === 'jobsdesc' && <JobDescriptions />}
+          {activeTab === 'jobcat' && <JobCategories />}
+         
+          {activeTab === 'candidates' && <Candidates />}
+          {activeTab === 'analytics' && <Analytics />}
         </main>
       </div>
     </div>
