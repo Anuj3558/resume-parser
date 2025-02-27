@@ -10,7 +10,7 @@ import Analytics from './compoenets/Analytics';
 
 
 function UserDashboardLayout() {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('userdashboard');
 
   return (
     <div className="flex h-screen bg-gray-100 ">
