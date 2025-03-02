@@ -4,7 +4,6 @@ import { LayoutDashboard, Users, FileText, FileSearch, LogOut } from 'lucide-rea
 export const Sidebar = ({ activeTab, setActiveTab }) => {
   const menuItems = [
     { id: 'userdashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-    { id: 'jobcat', label: 'Job Categories', icon: <Users size={20} /> },
     { id: 'jobsdesc', label: 'Job Descriptions', icon: <FileText size={20} /> },
     { id: 'candidates', label: 'Candidates', icon: <FileSearch size={20} /> },
   ];

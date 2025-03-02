@@ -154,13 +154,7 @@ const Candidates = () => {
             ))}
           </select>
           
-          <button
-            onClick={() => setShowUploadModal(true)}
-            className="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
-          >
-            <Upload size={20} className="mr-2" />
-            Upload Resumes
-          </button>
+          
         </div>
       </div>
 
