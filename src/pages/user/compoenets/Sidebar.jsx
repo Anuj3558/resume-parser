@@ -7,14 +7,13 @@ export const Sidebar = ({ activeTab, setActiveTab }) => {
     { id: 'jobcat', label: 'Job Categories', icon: <Users size={20} /> },
     { id: 'jobsdesc', label: 'Job Descriptions', icon: <FileText size={20} /> },
     { id: 'candidates', label: 'Candidates', icon: <FileSearch size={20} /> },
-    { id: 'analytics', label: 'Analytics', icon: <FileSearch size={20} /> },
   ];
 
   return (
     <div className="bg-gray-600 text-white w-64 flex flex-col">
       <div className="p-4 border-b border-gray-700">
         <h1 className="text-xl font-bold flex items-center">
-          <LayoutDashboard className="mr-2" /> Admin Dashboard
+          <LayoutDashboard className="mr-2" /> User Dashboard 
         </h1>
       </div>
       <nav className="flex-1 overflow-y-auto py-4">

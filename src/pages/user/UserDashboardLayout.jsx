@@ -20,9 +20,7 @@ function UserDashboardLayout() {
           {activeTab === 'userdashboard' && <UserDashboard />}
           {activeTab === 'jobsdesc' && <JobDescriptions />}
           {activeTab === 'jobcat' && <JobCategories />}
-         
           {activeTab === 'candidates' && <Candidates />}
-          {activeTab === 'analytics' && <Analytics />}
         </main>
       </div>
     </div>
