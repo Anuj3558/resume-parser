@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Users, FileText, FileSearch, LogOut } from 'lucide-react';
+import { LayoutDashboard, FileText, FileSearch, LogOut } from 'lucide-react';
 
 export const Sidebar = ({ activeTab, setActiveTab }) => {
   const menuItems = [
