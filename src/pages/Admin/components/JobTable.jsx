@@ -1,7 +1,8 @@
 import React from 'react';
-import { Edit, Trash2, Eye } from 'lucide-react';
+import { Edit, Trash2, Eye, User } from 'lucide-react';
+import { RecruiterAvatars } from './RecruiterAvatar';
 
-const JobTable = ({ jobs, onView, onEdit, onDelete }) => {
+const JobTable = ({ jobs, onView, onEdit, onDelete, onAssign }) => {
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200">
@@ -18,6 +19,9 @@ const JobTable = ({ jobs, onView, onEdit, onDelete }) => {
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Resume Matches
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Assigned
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
@@ -41,8 +45,17 @@ const JobTable = ({ jobs, onView, onEdit, onDelete }) => {
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-900">{job.resumeMatches}</div>
               </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <RecruiterAvatars job = {job} />
+              </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <div className="flex space-x-2">
+                  <button
+                    onClick={() => onAssign(job)}
+                    className="text-gray-600 hover:text-gray-900"
+                  >
+                    <User size={16} />
+                  </button>
                   <button
                     onClick={() => onView(job)}
                     className="text-gray-600 hover:text-gray-900"

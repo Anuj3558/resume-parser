@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mui/material": "^6.4.7",
     "@tabler/icons-react": "^3.28.1",
     "antd": "^5.23.0",
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
+    "daisyui": "^5.0.0",
     "framer-motion": "^11.17.0",
     "lucide-react": "^0.471.0",
     "react": "^19.0.0",

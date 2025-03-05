@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import JobTable from '../components/JobTable';
 import JobForm from '../components/JobForm';
 import JobPanel from './JobPanel';
@@ -17,7 +17,12 @@ export const JobDescriptions = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [selectedJob, setSelectedJob] = useState(null); // State for side panel
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [selectedJobForAssign, setSelectedJobForAssign] = useState(null);
+  const [recruiters, setRecruiters] = useState([]);
+  const [selectedRecruiter, setSelectedRecruiter] = useState({name: "", id:""});
 
+  
   // 🔹 Fetch Jobs from Backend
   useEffect(() => {
     const fetchJobs = async () => {
@@ -72,12 +77,53 @@ export const JobDescriptions = () => {
     setSelectedJob(job);
   };
 
-  const filteredJobs = jobs.filter(
+
+const handleAssignRecruiter = (job) => {
+  setSelectedJobForAssign(job);
+  fetchRecruiters();
+  setIsAssignModalOpen(true);
+};
+const fetchRecruiters = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/user/getUsers`);
+    setRecruiters(response.data);
+  } catch (error) {
+    console.error("Error fetching recruiters:", error);
+  }
+}
+
+
+const handleSubmitAssignment = async () => {
+  if (!selectedRecruiter.name) return alert("Select a recruiter!");
+  try {
+    await axios.put(`${BASE_URL}/job/assign/${selectedJobForAssign._id}`, {
+      userId: selectedRecruiter.id,
+    });
+
+    setJobs((prevJobs) =>
+      prevJobs.map((job) =>
+        job._id === selectedJobForAssign._id
+          ? {
+              ...job,
+              assigned: job.assigned ? [...job.assigned, selectedRecruiter] : [selectedRecruiter],
+            }
+          : job
+      )
+    );
+
+    setIsAssignModalOpen(false);
+    setSelectedRecruiter({name: "", id:""})
+  } catch (error) {
+    console.error("Error assigning recruiter:", error);
+  }
+};
+
+  const filteredJobs = useMemo( () => jobs.filter(
     (job) =>
       (categoryFilter === 'All' || job.category === categoryFilter) &&
       (job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.description.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  ), [jobs, categoryFilter, searchTerm]);
 
   const categories = ['All', 'Software Engineer', 'Data Scientist', 'Product Manager', 'UX Designer', 'DevOps Engineer'];
 
@@ -132,6 +178,7 @@ export const JobDescriptions = () => {
           onView={handleViewJob}
           onEdit={handleEditJob}
           onDelete={handleDeleteJob}
+          onAssign={(job) => handleAssignRecruiter(job)} // Add this
         />
       </div>
 
@@ -171,6 +218,30 @@ export const JobDescriptions = () => {
         <p className="mt-2 text-sm text-gray-900 ">
           Created on: {new Date(selectedJob?.createdAt).toLocaleDateString()}
         </p>
+      </Modal>
+      <Modal
+        isOpen={isAssignModalOpen}
+        onClose={() => setIsAssignModalOpen(false)}
+        title="Assign Recruiter"
+      >
+        <select
+          value={selectedRecruiter.name}
+          onChange={(e) => setSelectedRecruiter({"name":e.target.options[e.target.selectedIndex].dataset.name, "id": e.target.value})}
+          className="border p-2 w-full"
+        >
+          <option value="">Select a recruiter</option>
+          {recruiters.map((recruiter) => (
+            <option key={recruiter._id} value={recruiter._id} data-name={recruiter.name} >
+              {recruiter.name}
+            </option>
+          ))}
+        </select>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 mt-4 rounded"
+          onClick={handleSubmitAssignment}
+        >
+          Assign
+        </button>
       </Modal>
       {/* 🔹 Job Details Panel */}
       {/* {selectedJob && (

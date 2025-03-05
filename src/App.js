@@ -12,6 +12,7 @@ import AdminDashboard from './pages/Admin/AdminDashboard';
 import DashboardLayout from './pages/Admin/DashboardLayout';
 import UserDashboardLayout from './pages/user/UserDashboardLayout';
 
+
 const PageTransition = ({ children }) => {
   const pageVariants = {
     initial: { opacity: 0, scale: 0.98 },
@@ -62,9 +63,10 @@ function App() {
 }
 
 function AppWrapper() {
+  
   return (
     <Router>
-      <App />
+       <App/>
     </Router>
   );
 }
