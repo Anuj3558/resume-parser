@@ -4,7 +4,7 @@ import JobCategoriesTable from "./JobCategoriesTable";
 import AddEditCategoryModal from "./AddEditCategoryModal";
 import { BASE_URL } from "../../constants";
 
-const API_BASE_URL = `${BASE_URL}/api/job/job-categories`;
+const API_BASE_URL = `${BASE_URL}/job/job-categories`;
 
 const JobCategories = () => {
 	const [categories, setCategories] = useState([]);

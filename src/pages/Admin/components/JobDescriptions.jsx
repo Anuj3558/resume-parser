@@ -1,108 +1,75 @@
-import React, { useState } from 'react';
-import  JobTable  from '../components/JobTable';
-import  JobForm  from '../components/JobForm';
-import  Modal  from '../components/Modal';
+import React, { useState, useEffect } from 'react';
+import JobTable from '../components/JobTable';
+import JobForm from '../components/JobForm';
+// import JobPanel from './JobPanel';
+import Modal from '../components/Modal';
 import { Plus, Search, Filter } from 'lucide-react';
+import axios from 'axios';
+
+import { BASE_URL } from '../../constants';
+
+const API_URL = `${BASE_URL}/job/jobs`;
 
 export const JobDescriptions = () => {
-  const [jobs, setJobs] = useState([
-    {
-      id: 1,
-      title: 'Senior Frontend Developer',
-      category: 'Software Engineer',
-      description: 'We are looking for a Senior Frontend Developer with expertise in React and TypeScript.',
-      requirements: 'Minimum 5 years of experience with modern JavaScript frameworks, strong TypeScript skills.',
-      location: 'San Francisco, CA',
-      createdAt: '2023-05-15',
-      resumeMatches: 24,
-    },
-    {
-      id: 2,
-      title: 'Data Scientist',
-      category: 'Data Scientist',
-      description: 'Join our data science team to build machine learning models and analyze large datasets.',
-      requirements: 'Experience with Python, TensorFlow, and data visualization tools.',
-      location: 'New York, NY',
-      createdAt: '2023-06-02',
-      resumeMatches: 18,
-    },
-    {
-      id: 3,
-      title: 'Product Manager',
-      category: 'Product Manager',
-      description: 'Lead product development and work with cross-functional teams to deliver great user experiences.',
-      requirements: 'Experience in product management, strong communication skills, and technical background.',
-      location: 'Austin, TX',
-      createdAt: '2023-06-10',
-      resumeMatches: 12,
-    },
-    {
-      id: 4,
-      title: 'UX/UI Designer',
-      category: 'UX Designer',
-      description: 'Design intuitive and beautiful user interfaces for our web and mobile applications.',
-      requirements: 'Portfolio showcasing UX/UI design work, proficiency in Figma and Adobe Creative Suite.',
-      location: 'Seattle, WA',
-      createdAt: '2023-06-15',
-      resumeMatches: 9,
-    },
-    {
-      id: 5,
-      title: 'DevOps Engineer',
-      category: 'DevOps Engineer',
-      description: 'Manage our cloud infrastructure and implement CI/CD pipelines.',
-      requirements: 'Experience with AWS, Docker, Kubernetes, and infrastructure as code.',
-      location: 'Chicago, IL',
-      createdAt: '2023-06-20',
-      resumeMatches: 15,
-    },
-  ]);
-
+  const [jobs, setJobs] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentJob, setCurrentJob] = useState(undefined);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
+  // const [selectedJob, setSelectedJob] = useState(null); // State for side panel
 
-  const handleAddJob = () => {
-    setCurrentJob(undefined);
-    setIsModalOpen(true);
+  // 🔹 Fetch Jobs from Backend
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await axios.get(API_URL);
+        setJobs(response.data);
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+      }
+    };
+    fetchJobs();
+  }, []);
+
+  // 🔹 Add or Update Job
+  const handleSubmitJob = async (jobData) => {
+    try {
+      if (currentJob) {
+        // Update existing job
+        const response = await axios.put(`${API_URL}/${currentJob._id}`, jobData);
+        setJobs(jobs.map((job) => (job._id === currentJob._id ? response.data : job)));
+      } else {
+        // Add new job
+        const response = await axios.post(API_URL, jobData);
+        setJobs([...jobs, response.data]);
+      }
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Error saving job:', error);
+    }
   };
 
+  // 🔹 Delete Job
+  const handleDeleteJob = async (id) => {
+    if (window.confirm('Are you sure you want to delete this job description?')) {
+      try {
+        await axios.delete(`${API_URL}/${id}`);
+        setJobs(jobs.filter((job) => job._id !== id));
+      } catch (error) {
+        console.error('Error deleting job:', error);
+      }
+    }
+  };
+
+  // 🔹 Open Modal for Editing
   const handleEditJob = (job) => {
     setCurrentJob(job);
     setIsModalOpen(true);
   };
 
+  // 🔹 Open Side Panel for Viewing Job
   const handleViewJob = (job) => {
-    // In a real application, this would show a detailed view
-    alert(`Viewing job: ${job.title}`);
-  };
-
-  const handleDeleteJob = (id) => {
-    if (window.confirm('Are you sure you want to delete this job description?')) {
-      setJobs(jobs.filter((job) => job.id !== id));
-    }
-  };
-
-  const handleSubmitJob = (jobData) => {
-    if (currentJob) {
-      // Update existing job
-      setJobs(
-        jobs.map((job) =>
-          job.id === currentJob.id ? { ...job, ...jobData } : job
-        )
-      );
-    } else {
-      // Add new job
-      const newJob = {
-        id: Math.max(0, ...jobs.map((j) => j.id)) + 1,
-        ...jobData,
-        createdAt: new Date().toISOString().split('T')[0],
-        resumeMatches: 0,
-      };
-      setJobs([...jobs, newJob]);
-    }
-    setIsModalOpen(false);
+    // setSelectedJob(job);
   };
 
   const filteredJobs = jobs.filter(
@@ -117,10 +84,10 @@ export const JobDescriptions = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Job Descriptions</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Job Descriptions ssdfsdf</h1>
         <button
-          onClick={handleAddJob}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          onClick={() => { setCurrentJob(undefined); setIsModalOpen(true); }}
+          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
         >
           <Plus className="mr-2 h-4 w-4" />
           Add Job Description
@@ -158,9 +125,7 @@ export const JobDescriptions = () => {
       <div className="bg-white shadow rounded-lg overflow-hidden">
         <div className="p-4 border-b border-gray-200">
           <h2 className="text-lg font-medium text-gray-900">Job Descriptions</h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Manage job descriptions and track resume matches
-          </p>
+          <p className="mt-1 text-sm text-gray-500">Manage job descriptions and track resume matches</p>
         </div>
         <JobTable
           jobs={filteredJobs}
@@ -181,6 +146,11 @@ export const JobDescriptions = () => {
           onCancel={() => setIsModalOpen(false)}
         />
       </Modal>
+
+      {/* 🔹 Job Details Panel */}
+      {/* {selectedJob && (
+        // <JobPanel job={selectedJob} onClose={() => setSelectedJob(null)} />
+      )} */}
     </div>
   );
 };
