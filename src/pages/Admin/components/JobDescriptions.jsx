@@ -5,7 +5,7 @@ import JobPanel from './JobPanel';
 import Modal from '../components/Modal';
 import { Plus, Search, Filter } from 'lucide-react';
 import axios from 'axios';
-
+import ReactMarkdown from "react-markdown";
 import { BASE_URL } from '../../constants';
 
 const API_URL = `${BASE_URL}/job/jobs`;
@@ -84,7 +84,7 @@ export const JobDescriptions = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Job Descriptions ssdfsdf</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Job Descriptions</h1>
         <button
           onClick={() => { setCurrentJob(undefined); setIsModalOpen(true); }}
           className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
@@ -147,10 +147,35 @@ export const JobDescriptions = () => {
         />
       </Modal>
 
+      <Modal 
+        isOpen={selectedJob && selectedJob}
+        onClose={() => setSelectedJob(null)}
+        title = {`View Job`}
+        className={`w-full`}
+      >
+        <p className="mt-4 text-sm text-gray-900">
+          <strong>Category:</strong> <ReactMarkdown>{selectedJob?.category}</ReactMarkdown>
+        </p>
+        <p className="mt-2 text-sm text-gray-900">
+          <strong>Location:</strong>  <ReactMarkdown>{selectedJob?.location}</ReactMarkdown>
+        </p>
+        <p className="mt-2 text-sm text-gray-900">
+          <strong>Description:</strong> <ReactMarkdown>{selectedJob?.description}</ReactMarkdown>
+        </p>
+        <p className="mt-2 text-sm text-gray-900">
+          <strong>Requirements:</strong> <ReactMarkdown>{selectedJob?.requirements}</ReactMarkdown>
+        </p>
+        <p className="mt-2 text-sm text-gray-900">
+          <strong>Resume Matches:</strong> <ReactMarkdown>{selectedJob?.resumeMatches}</ReactMarkdown>
+        </p>
+        <p className="mt-2 text-sm text-gray-900 ">
+          Created on: {new Date(selectedJob?.createdAt).toLocaleDateString()}
+        </p>
+      </Modal>
       {/* 🔹 Job Details Panel */}
-      {selectedJob && (
+      {/* {selectedJob && (
         <JobPanel job={selectedJob} onClose={() => setSelectedJob(null)} />
-      )}
+      )} */}
     </div>
   );
 };
