@@ -16,7 +16,9 @@ const UserManagement = () => {
 	const fetchUsers = async () => {
 		try {
 			const response = await fetch(
-				`${process.env.REACT_APP_BACKEND_URL || "http://localhost:4000"}/user/getUsers`
+				`${
+					process.env.REACT_APP_BACKEND_URL || "http://localhost:4000"
+				}/user/getUsers`
 			)
 			const data = await response.json()
 			setUsers(data)

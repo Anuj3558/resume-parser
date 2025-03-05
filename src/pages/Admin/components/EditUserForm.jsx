@@ -4,7 +4,7 @@ const EditUserForm = ({user, onEdit}) => {
 	const [formData, setFormData] = useState({
 		name: user.name || "",
 		email: user.email || "",
-		role: user.role || "",
+		password: "",
 		status: user.status || "ACTIVE",
 	})
 
@@ -13,7 +13,7 @@ const EditUserForm = ({user, onEdit}) => {
 			setFormData({
 				name: user.name,
 				email: user.email,
-				role: user.role,
+				password: user.password,
 				status: user.status,
 			})
 		}
@@ -25,7 +25,6 @@ const EditUserForm = ({user, onEdit}) => {
 	}
 	const updateUser = async () => {
 		try {
-			console.log("user", formData)
 			const response = await fetch(
 				`${process.env.REACT_APP_BACKEND_URL}/user/updateUser/${user._id}`,
 				{
@@ -75,11 +74,12 @@ const EditUserForm = ({user, onEdit}) => {
 				/>
 			</div>
 			<div>
-				<label className="block text-sm font-medium text-gray-700">Role</label>
+				<label className="block text-sm font-medium text-gray-700">
+					Password
+				</label>
 				<input
-					type="text"
-					name="role"
-					value={formData.role}
+					type="password"
+					name="password"
 					onChange={handleChange}
 					className="w-full px-3 py-2 border rounded-lg"
 					required
