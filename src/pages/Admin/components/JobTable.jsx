@@ -56,7 +56,7 @@ const JobTable = ({ jobs, onView, onEdit, onDelete }) => {
                     <Edit size={16} />
                   </button>
                   <button
-                    onClick={() => onDelete(job.id)}
+                    onClick={() => onDelete(job._id)}
                     className="text-red-600 hover:text-red-900"
                   >
                     <Trash2 size={16} />

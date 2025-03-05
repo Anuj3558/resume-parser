@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import JobTable from '../components/JobTable';
 import JobForm from '../components/JobForm';
-// import JobPanel from './JobPanel';
+import JobPanel from './JobPanel';
 import Modal from '../components/Modal';
 import { Plus, Search, Filter } from 'lucide-react';
 import axios from 'axios';
@@ -16,7 +16,7 @@ export const JobDescriptions = () => {
   const [currentJob, setCurrentJob] = useState(undefined);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
-  // const [selectedJob, setSelectedJob] = useState(null); // State for side panel
+  const [selectedJob, setSelectedJob] = useState(null); // State for side panel
 
   // 🔹 Fetch Jobs from Backend
   useEffect(() => {
@@ -69,7 +69,7 @@ export const JobDescriptions = () => {
 
   // 🔹 Open Side Panel for Viewing Job
   const handleViewJob = (job) => {
-    // setSelectedJob(job);
+    setSelectedJob(job);
   };
 
   const filteredJobs = jobs.filter(
@@ -148,9 +148,9 @@ export const JobDescriptions = () => {
       </Modal>
 
       {/* 🔹 Job Details Panel */}
-      {/* {selectedJob && (
-        // <JobPanel job={selectedJob} onClose={() => setSelectedJob(null)} />
-      )} */}
+      {selectedJob && (
+        <JobPanel job={selectedJob} onClose={() => setSelectedJob(null)} />
+      )}
     </div>
   );
 };
