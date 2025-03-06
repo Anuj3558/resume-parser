@@ -3,9 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { User, Lock } from 'lucide-react';
 import { notification } from 'antd';
 
-
-
-
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -17,10 +14,10 @@ const Login = () => {
   useEffect(() => {
     // Check if user is already logged in
     const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
+    const user = JSON.parse(localStorage.getItem('user')); // Convert string to object
     
     if (token && user) {
-      navigate('/dashboard');
+      navigate(`/${user.role.toLowerCase()}-dashboard`);
     }
   }, [navigate]);
 
@@ -46,9 +43,13 @@ const Login = () => {
         body: JSON.stringify({ username, password }),
       });
       
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
       const data = await response.json();
       
-      if (response.ok) {
+      if (data.token && data.user) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         
@@ -58,9 +59,13 @@ const Login = () => {
           'Welcome back! You are now being redirected.'
         );
 
+        const role = data?.user?.role;
+        console.log(data?.user)
+        const route = role?.toLowerCase();
+        console.log(route);
         // Slight delay before redirect to show the success message
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate(`/${route}-dashboard`);
         }, 1000);
       } else {
         openNotification(
@@ -73,7 +78,7 @@ const Login = () => {
       openNotification(
         'error',
         'Error',
-        'Error during login. Please try again.'
+        error.message || 'Error during login. Please try again.'
       );
     } finally {
       setLoading(false);
@@ -106,7 +111,7 @@ const Login = () => {
                 Email
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                <User className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" aria-hidden="true" />
                 <input
                   id="username"
                   type="email"
@@ -117,6 +122,7 @@ const Login = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
+                  aria-required="true"
                 />
               </div>
             </div>
@@ -126,7 +132,7 @@ const Login = () => {
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" aria-hidden="true" />
                 <input
                   id="password"
                   type="password"
@@ -137,6 +143,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  aria-required="true"
                 />
               </div>
             </div>
@@ -150,6 +157,7 @@ const Login = () => {
                        transition-all duration-150 focus:outline-none focus:ring-2 
                        focus:ring-blue-500 focus:ring-offset-2
                        ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              aria-disabled={loading}
             >
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
