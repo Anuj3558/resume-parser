@@ -7,7 +7,7 @@ import axios from "axios"
 import {Upload, Plus, FileText, Download, Trash2} from "lucide-react"
 
 const JobDescriptions = () => {
-	const API_URL = `${BASE_URL}/job/jobs`
+	const JOB_API_URL = `${BASE_URL}/job/jobs`
 
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [currentJob, setCurrentJob] = useState(null)
@@ -71,7 +71,7 @@ const JobDescriptions = () => {
 			if (currentJob) {
 				// Update existing job
 				const response = await axios.put(
-					`${API_URL}/${currentJob._id}`,
+					`${JOB_API_URL}/${currentJob._id}`,
 					jobData
 				)
 				setJobs(
@@ -81,7 +81,9 @@ const JobDescriptions = () => {
 				)
 			} else {
 				// Add new job
-				const response = await axios.post(API_URL, jobData)
+				console.log("INPUT", jobData)
+				const response = await axios.post(JOB_API_URL, jobData)
+				console.log(" RESPONSE", response.data)
 				setJobs([...jobs, response.data])
 			}
 			setIsModalOpen(false)
@@ -109,7 +111,7 @@ const JobDescriptions = () => {
 	}
 
 	const handleDeleteJobDescription = (id) => {
-		axios.delete(`${API_URL}/${id}`)
+		axios.delete(`${JOB_API_URL}/${id}`)
 		setJobDescriptions(jobDescriptions.filter((jd) => jd.id !== id))
 	}
 
@@ -161,7 +163,7 @@ const JobDescriptions = () => {
 		const fetchJobs = async () => {
 			try {
 				const response = await fetch(
-					`${process.env.REACT_APP_BACKEND_URL}/recruiter/getJobs/${u.userId}`,
+					`${process.env.REACT_APP_BACKEND_URL}/recruiter/getAllJobs/${u.userId}`,
 					{
 						method: "GET",
 						headers: {
@@ -189,6 +191,7 @@ const JobDescriptions = () => {
 								title: job.title,
 								description: job.description,
 								uploadedAt: job.createdAt,
+								initiator: job.initiator,
 							},
 						]
 					})
@@ -200,7 +203,7 @@ const JobDescriptions = () => {
 		}
 
 		fetchJobs()
-	}, [])
+	}, [setIsModalOpen, isModalOpen])
 
 	return (
 		<div>
@@ -297,6 +300,10 @@ const JobDescriptions = () => {
 						<div className="bg-gray-50 px-5 py-3 border-t">
 							<button
 								onClick={setShowUploadFile}
+								disabled={
+									job.initiator !==
+									JSON.parse(localStorage.getItem("user")).userId
+								}
 								className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition-colors"
 							>
 								Upload Resumes
