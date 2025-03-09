@@ -173,10 +173,10 @@ const JobDescriptions = () => {
 	return (
 		<div>
 			<div className="flex justify-between items-center mb-6">
-				<h1 className="text-2xl font-bold">Job Descriptions</h1>
+				<h1 className="text-2xl font-bold text-black">Job Descriptions</h1>
 				<button
 					onClick={() => setShowModal(true)}
-					className="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+					className="flex items-center bg-indigo-600  px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
 				>
 					<Plus size={20} className="mr-2" />
 					Upload Job Description
@@ -195,7 +195,7 @@ const JobDescriptions = () => {
 					id="categoryFilter"
 					value={selectedFilter}
 					onChange={(e) => setSelectedFilter(e.target.value)}
-					className="w-full md:w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+					className="w-full md:w-64 px-3 py-2 border border-gray-300 bg-white text-black rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
 				>
 					<option value="all">All Categories</option>
 					{categories.map((category) => (
@@ -207,7 +207,7 @@ const JobDescriptions = () => {
 			</div>
 
 			{/* Job Descriptions Cards */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			<div className="grid grid-cols-1 md:grid-cols-2 text-black lg:grid-cols-3 gap-6">
 				{filteredJobDescriptions.map((job) => (
 					<div
 						key={job.id}
@@ -220,7 +220,8 @@ const JobDescriptions = () => {
 										size={24}
 										className="text-indigo-600 mr-3"
 									/>
-									<h3 className="text-lg font-semibold">
+									<h3 className="text-lg font-semibold text-black
+									">
 										{job.title}
 									</h3>
 								</div>
@@ -265,7 +266,8 @@ const JobDescriptions = () => {
 						<div className="bg-gray-50 px-5 py-3 border-t">
 							<button
 								onClick={setShowUploadFile}
-								className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition-colors"
+								className="w-full bg-indigo-600 text-white
+								 py-2 rounded-md hover:bg-indigo-700 transition-colors"
 							>
 								Upload Resumes
 							</button>
@@ -277,8 +279,8 @@ const JobDescriptions = () => {
 			{/* Upload Job Description Modal */}
 			{showModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-					<div className="bg-white rounded-lg p-6 w-full max-w-md">
-						<h2 className="text-xl font-semibold mb-4">
+					<div className="bg-white text-black rounded-lg p-6 w-full max-w-md">
+						<h2 className="text-xl font-semibold mb-4 text-black">
 							Upload Job Description
 						</h2>
 
@@ -293,7 +295,7 @@ const JobDescriptions = () => {
 								id="category"
 								value={selectedCategory}
 								onChange={(e) => setSelectedCategory(e.target.value)}
-								className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+								className="w-full px-3 py-2 border border-gray-300 bg-white text-black rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
 							>
 								<option value="">Select a category</option>
 								{categories.map((category) => (
@@ -316,7 +318,7 @@ const JobDescriptions = () => {
 								id="jobTitle"
 								value={jobTitle}
 								onChange={(e) => setJobTitle(e.target.value)}
-								className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+								className="w-full px-3 py-2 border bg-white border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
 								placeholder="Enter job title"
 							/>
 						</div>
@@ -341,7 +343,7 @@ const JobDescriptions = () => {
 												id="file-upload"
 												name="file-upload"
 												type="file"
-												className="sr-only"
+												className="sr-only bg-white"
 												accept=".pdf,.doc,.docx"
 												onChange={(e) => {
 													if (
@@ -388,7 +390,7 @@ const JobDescriptions = () => {
 			{showUploadFile && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
 					<div className="bg-white rounded-lg p-6 w-full max-w-md">
-						<h2 className="text-xl font-semibold mb-4">Upload Resumes</h2>
+						<h2 className="text-xl font-semibold mb-4 text-black">Upload Resumes</h2>
 
 						<div className="mb-4">
 							<p className="text-sm text-gray-600 mb-2">
