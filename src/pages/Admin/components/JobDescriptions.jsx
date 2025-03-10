@@ -3,7 +3,7 @@ import JobTable from '../components/JobTable';
 import JobForm from '../components/JobForm';
 import JobPanel from './JobPanel';
 import Modal from '../components/Modal';
-import { Plus, Search, Filter } from 'lucide-react';
+import { Plus, Search, Filter, User } from 'lucide-react';
 import axios from 'axios';
 import ReactMarkdown from "react-markdown";
 import { BASE_URL } from '../../constants';
@@ -21,7 +21,7 @@ export const JobDescriptions = () => {
   const [selectedJobForAssign, setSelectedJobForAssign] = useState(null);
   const [recruiters, setRecruiters] = useState([]);
   const [selectedRecruiter, setSelectedRecruiter] = useState({name: "", id:""});
-
+  const user = JSON.parse(localStorage.getItem('user'));
   
   // 🔹 Fetch Jobs from Backend
   useEffect(() => {
@@ -45,8 +45,16 @@ export const JobDescriptions = () => {
         setJobs(jobs.map((job) => (job._id === currentJob._id ? response.data : job)));
       } else {
         // Add new job
-        const response = await axios.post(API_URL, jobData);
+        console.log(jobData)
+       
+        const formData = new FormData();
+        for (const key in jobData) {
+          formData.append(key, jobData[key]);
+        }
+        formData.append('initiator', user?.userId);
+        const response = await axios.post(API_URL, formData)
         setJobs([...jobs, response.data]);
+        
       }
       setIsModalOpen(false);
     } catch (error) {
