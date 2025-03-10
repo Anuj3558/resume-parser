@@ -1,25 +1,30 @@
 import React, {useState, useEffect} from "react"
 import axios from "axios"
 import {BASE_URL} from "../../constants"
-const JobForm = ({job, onSubmit, onCancel}) => {
+const JobForm = ({job, onSubmit, onCancel, onDelete}) => {
 	const [categories, setCategories] = useState([])
+	const user = JSON.parse(localStorage.getItem("user"))
 	const [formData, setFormData] = useState({
+		userId: user.userId,
 		title: "",
 		category: "",
 		description: "",
 		requirements: "",
 		location: "",
-		initiator: localStorage.getItem("user").id,
+		initiator: user.userId,
 	})
 
 	useEffect(() => {
+		console.log(user, user.userId)
 		if (job) {
 			setFormData({
+				userId: user.userId,
 				title: job.title,
 				category: job.category,
 				description: job.description,
 				requirements: job.requirements,
 				location: job.location,
+				initiator: user.userId,
 			})
 		}
 		axios

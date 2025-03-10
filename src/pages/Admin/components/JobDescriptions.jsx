@@ -45,6 +45,11 @@ export const JobDescriptions = () => {
         setJobs(jobs.map((job) => (job._id === currentJob._id ? response.data : job)));
       } else {
         // Add new job
+        const u = JSON.parse(localStorage.getItem("user"))
+		    console.log(u.userId)
+        jobData.userId = u.userId;
+        jobData.initiator = u.userId;
+        console.log(jobData)
         const response = await axios.post(API_URL, jobData);
         setJobs([...jobs, response.data]);
       }
