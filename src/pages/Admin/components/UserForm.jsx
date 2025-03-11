@@ -4,7 +4,7 @@ export const UserForm = ({user, onSuccess}) => {
 	const [formData, setFormData] = useState({
 		name: "",
 		email: "",
-		role: "",
+		password: "",
 		status: "ACTIVE",
 	})
 
@@ -13,7 +13,7 @@ export const UserForm = ({user, onSuccess}) => {
 			setFormData({
 				name: "",
 				email: "",
-				role: "",
+				password: "",
 				status: "ACTIVE",
 			})
 		}
@@ -27,7 +27,7 @@ export const UserForm = ({user, onSuccess}) => {
 		})
 	}
 
-	const 	addUser = async (userData) => {
+	const addUser = async (userData) => {
 		try {
 			const response = await fetch(
 				`${process.env.REACT_APP_BACKEND_URL}/user/addUser`,
@@ -105,15 +105,15 @@ export const UserForm = ({user, onSuccess}) => {
 			{/* Role */}
 			<div>
 				<label
-					htmlFor="role"
+					htmlFor="password"
 					className="block text-sm font-medium text-gray-700"
 				>
-					Job Role
+					Password
 				</label>
 				<input
-					type="text"
-					id="role"
-					name="role"
+					type="password"
+					id="pasrdswo"
+					name="password"
 					value={formData.role}
 					onChange={handleChange}
 					required

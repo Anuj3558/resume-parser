@@ -33,8 +33,8 @@ const UserManagement = () => {
 
 	const handleAddUser = async () => {
 		setCurrentUser(undefined)
-		fetchUsers()
 		setIsModalOpen(true)
+		fetchUsers()
 	}
 
 	const handleEditUser = async (user) => {
