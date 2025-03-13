@@ -43,7 +43,7 @@ const JobTable = ({ jobs, onView, onEdit, onDelete, onAssign }) => {
                 <div className="text-sm text-gray-500">{job.createdAt}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">{job.resumeMatches}</div>
+                <div className="text-sm text-gray-900">{job.resumeMatches.toString()}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <RecruiterAvatars job = {job} />

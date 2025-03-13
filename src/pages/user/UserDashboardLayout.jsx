@@ -3,6 +3,7 @@ import { Sidebar } from './compoenets/Sidebar';
 import UserDashboard from './compoenets/UserDashboard';
 import JobDescriptions from './compoenets/JobDescriptions';
 import Candidates from './compoenets/Candidates';
+import ResumeEvaluation from './compoenets/ResumeEvaluation';
 
 function UserDashboardLayout() {
   const [activeTab, setActiveTab] = useState('userdashboard');
@@ -15,6 +16,7 @@ function UserDashboardLayout() {
           {activeTab === 'userdashboard' && <UserDashboard />}
           {activeTab === 'jobsdesc' && <JobDescriptions setActiveTab = {setActiveTab}/>}
           {activeTab === 'candidates' && <Candidates />}
+          {activeTab === 'jobeval' && <ResumeEvaluation />}
         </main>
       </div>
     </div>

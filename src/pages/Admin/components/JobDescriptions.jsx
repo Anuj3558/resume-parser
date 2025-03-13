@@ -218,7 +218,7 @@ const handleSubmitAssignment = async () => {
           <strong>Requirements:</strong> <ReactMarkdown>{selectedJob?.requirements}</ReactMarkdown>
         </p>
         <p className="mt-2 text-sm text-gray-900">
-          <strong>Resume Matches:</strong> <ReactMarkdown>{selectedJob?.resumeMatches}</ReactMarkdown>
+          <strong>Resume Matches:</strong> <ReactMarkdown>{selectedJob?.resumeMatches.toString()}</ReactMarkdown>
         </p>
         <p className="mt-2 text-sm text-gray-900 ">
           Created on: {new Date(selectedJob?.createdAt).toLocaleDateString()}

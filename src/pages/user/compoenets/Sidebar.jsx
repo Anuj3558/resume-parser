@@ -1,5 +1,5 @@
 import React, {useState} from "react"
-import {LayoutDashboard, FileText, FileSearch, LogOut, Menu} from "lucide-react"
+import {LayoutDashboard, FileText, FileSearch, User, LogOut, Menu} from "lucide-react"
 import {useNavigate} from "react-router-dom"
 
 export const Sidebar = ({activeTab, setActiveTab}) => {
@@ -8,7 +8,8 @@ export const Sidebar = ({activeTab, setActiveTab}) => {
 	const menuItems = [
 		{id: "userdashboard", label: "Dashboard", icon: <LayoutDashboard size={20} />},
 		{id: "jobsdesc", label: "Job Descriptions", icon: <FileText size={20} />},
-		{id: "candidates", label: "Candidates", icon: <FileSearch size={20} />},
+		{id: "candidates", label: "Candidates", icon: <User size={20} />},
+		{id: "jobeval", label: "Resume Evals", icon: <FileSearch size={20} />},
 	]
 	const navigate = useNavigate()
 	const handleLogout = () => {
