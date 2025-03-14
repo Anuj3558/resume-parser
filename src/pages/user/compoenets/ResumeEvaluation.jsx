@@ -214,16 +214,7 @@ const ResumeEvaluation = () => {
             </p>
 
             <h4 className="mt-4 font-semibold">Evaluation Points:</h4>
-            <div className="w-full h-40">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data}>
-                  <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="value" fill="#4CAF50" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+        
 
             <button
               className="mt-4 w-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
