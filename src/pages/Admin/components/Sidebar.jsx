@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom"
 
 export const Sidebar = ({activeTab, setActiveTab}) => {
 	const [isCollapsed, setIsCollapsed] = useState(true)
-
+  //sidebar responsive
 	const menuItems = [
 		{id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} />},
 		{id: "users", label: "User Management", icon: <Users size={20} />},
