@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react"
+import React, { useState, useEffect } from "react";
 
 export const UserForm = ({user, onSuccess}) => {
 	const [formData, setFormData] = useState({
@@ -40,48 +40,49 @@ export const UserForm = ({user, onSuccess}) => {
 				}
 			)
 
-			if (!response.ok) {
-				throw new Error(`Error: ${response.status} - ${response.statusText}`)
-			}
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Request failed");
+      }
 
-			const data = await response.json()
-			console.log("User added successfully:", data)
+      return await response.json();
+    } catch (error) {
+      console.error("Operation failed:", error);
+      throw error;
+    }
+  };
 
-			return data
-		} catch (error) {
-			console.error("Error adding user:", error)
-		}
-	}
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await addUser();
+      onSuccess();
+    } catch (error) {
+      // Add error handling UI here
+      alert(`Operation failed: ${error.message}`);
+    }
+  };
 
-	const handleSubmit = (e) => {
-		e.preventDefault()
-		addUser()
-		onSuccess()
-	}
-
-	return (
-		<form
-			onSubmit={handleSubmit}
-			className="space-y-4 max-w-md mx-auto bg-white p-6 rounded-lg shadow-md"
-		>
-			{/* Name */}
-			<div>
-				<label
-					htmlFor="name"
-					className="block text-sm font-medium text-gray-700"
-				>
-					Name
-				</label>
-				<input
-					type="text"
-					id="name"
-					name="name"
-					value={formData.name}
-					onChange={handleChange}
-					required
-					className="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-				/>
-			</div>
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 max-w-md mx-auto bg-white p-6 rounded-lg shadow-md"
+    >
+      {/* Name */}
+      <div>
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+          Name
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+        />
+      </div>
 
 			{/* Email */}
 			<div>
@@ -121,35 +122,32 @@ export const UserForm = ({user, onSuccess}) => {
 				/>
 			</div>
 
-			{/* Status */}
-			<div>
-				<label
-					htmlFor="status"
-					className="block text-sm font-medium text-gray-700"
-				>
-					Status
-				</label>
-				<select
-					id="status"
-					name="status"
-					value={formData.status}
-					onChange={handleChange}
-					className="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm appearance-none"
-				>
-					<option value="ACTIVE">ACTIVE</option>
-					<option value="INACTIVE">INACTIVE</option>
-				</select>
-			</div>
+      {/* Status */}
+      <div>
+        <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+          Status
+        </label>
+        <select
+          id="status"
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+          className="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm appearance-none"
+        >
+          <option value="ACTIVE">ACTIVE</option>
+          <option value="INACTIVE">INACTIVE</option>
+        </select>
+      </div>
 
-			{/* Buttons */}
-			<div className="flex justify-end space-x-3 pt-4">
-				<button
-					type="submit"
-					className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-				>
-					{user ? "Update" : "Add"} User
-				</button>
-			</div>
-		</form>
-	)
-}
+      {/* Submit Button */}
+      <div className="flex justify-end space-x-3 pt-4">
+        <button
+          type="submit"
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          {user ? "Update" : "Add"} User
+        </button>
+      </div>
+    </form>
+  );
+};
