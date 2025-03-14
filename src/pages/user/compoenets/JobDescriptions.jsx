@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "./Modal";
 import JobForm from "./JobForm";
-import { BASE_URL } from "../../constants";
+// import { process.env.REACT_APP_BACKEND_URL } from "../../constants";
 import axios from "axios";
 import Cookie from "js-cookie";
 import {
@@ -18,7 +18,7 @@ import "antd/dist/reset.css";
 import useNotification from "../../../components/Notification";
 // import useNo from "../../../components/Notification";
 const JobDescriptions = ({setActiveTab}) => {
-  const JOB_API_URL = `${BASE_URL}/job/jobs`;
+  const JOB_API_URL = `${process.env.REACT_APP_BACKEND_URL}/job/jobs`;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentJob, setCurrentJob] = useState(null);
@@ -42,7 +42,7 @@ const JobDescriptions = ({setActiveTab}) => {
       if (currentJob) {
         // Update existing job
         const response = await axios.put(
-          `${JOB_API_URL}/${currentJob._id}`,
+          `${process.env.REACT_APP_BACKEND_URL}/${currentJob._id}`,
           jobData
         );
         setJobs(
@@ -51,7 +51,7 @@ const JobDescriptions = ({setActiveTab}) => {
       } else {
         // Add new job
         console.log("INPUT", jobData);
-        const response = await axios.post(JOB_API_URL, jobData);
+        const response = await axios.post(process.env.REACT_APP_BACKEND_URL + `/job/jobs`, jobData);
         console.log(" RESPONSE", response.data);
         setJobs([...jobs, response.data]);
       }
@@ -82,7 +82,7 @@ const JobDescriptions = ({setActiveTab}) => {
   };
 
   const handleDeleteJobDescription = (id) => {
-    axios.delete(`${JOB_API_URL}/${id}`);
+    axios.delete(`${process.env.REACT_APP_BACKEND_URL}/job/jobs/${id}`);
     setJobDescriptions(jobDescriptions.filter((jd) => jd.id !== id));
     setShowDeleteConfirm(null);
   };
@@ -133,7 +133,7 @@ const JobDescriptions = ({setActiveTab}) => {
 
       // Send the files to the backend
       const response = await axios.post(
-        `${BASE_URL}/upload-resume/${jobId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/upload-resume/${jobId}`,
         formData,
         {
           headers: {
@@ -145,16 +145,17 @@ const JobDescriptions = ({setActiveTab}) => {
       );
 
       // Update the local state with the uploaded resumes
+      console.log(response, response.data, response.data.success, response.data.success === true)
       if (response.data.success) {
         // Get the updated job with new resume information
-        const updatedJob = response.data.job;
+        // const updatedJob = response.data.job;
 
-        // Update job resumes in local state
-        setJobResumes({
-          ...jobResumes,
-          [jobId]: updatedJob.resumes,
-        });
-        alert("uploaded");
+        // // Update job resumes in local state
+        // setJobResumes({
+        //   ...jobResumes,
+        //   [jobId]: updatedJob.resumes,
+        // });
+        // alert("uploaded");
         // Show success message
         openNotification(
           "success",
@@ -215,7 +216,7 @@ const JobDescriptions = ({setActiveTab}) => {
 
       // Send a POST request to the backend to process resumes
       const response = await axios.post(
-        `${BASE_URL}/process-resumes/${jobId}/${userId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/process-resumes/${jobId}/${userId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -513,7 +514,7 @@ const JobDescriptions = ({setActiveTab}) => {
                   onClick={() => handleProcessResumes(job.id)}
                   className="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-colors disabled:bg-green-300"
                 >
-                  Process Resumes
+                  {`Process Resumes`}
                 </button>
               </div>
             </div>
@@ -680,7 +681,7 @@ const JobDescriptions = ({setActiveTab}) => {
                     <p className="pl-1">or drag and drop</p>
                   </div>
                   <p className="text-xs text-gray-500">
-                    PDF, DOC, DOCX up to 10MB each
+                    PDF only upto 10MB each {console.log("These files are uploaded ->", resumeFiles)}
                   </p>
                   {resumeFiles.length > 0 && (
                     <div className="mt-2 text-sm text-indigo-600">

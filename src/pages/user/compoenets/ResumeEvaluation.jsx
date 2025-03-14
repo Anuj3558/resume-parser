@@ -35,7 +35,10 @@ const ResumeEvaluation = () => {
     if (!jobId) return;
     fetch(process.env.REACT_APP_BACKEND_URL + `/job/resumeEvals/${jobId}`)
       .then((res) => res.json())
-      .then((data) => setResumes(data[0]?.resumes || []))
+      .then((data) => {
+        setResumes(data[0]?.resumes || [])
+        console.log(data)
+  })
       .catch((err) => console.error("Error fetching resumes:", err));
   }, [jobId]);
 
