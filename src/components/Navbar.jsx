@@ -36,7 +36,7 @@ const Navbar = () => {
     const role = JSON.parse(localStorage.getItem('user'))?.role
     if (isAuthenticated) {
       return [
-        { name: 'Dashboard', href: `/${role}-dashboard` },
+        { name: 'Dashboard', href: `/${role?.toLowerCase()}-dashboard` },
         { name: 'Process Resume', href: '/res' },
         { name: 'Profile', href: '/profile' }
       ];
@@ -81,7 +81,7 @@ const Navbar = () => {
                 <motion.a
                   key={item.name}
                   href={item.href}
-                  className="text-gray-300 hover:text-white relative group px-3 py-2"
+                  className="text-gray-300 hover:text-black relative group px-3 py-2"
                   whileHover={{ scale: 1.05 }}
                 >
                   {item.name}
