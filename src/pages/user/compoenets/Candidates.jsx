@@ -1,79 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Upload, Search, Filter, ArrowUpDown, CheckCircle, XCircle } from 'lucide-react';
 
 const Candidates = () => {
-  // Mock data
-  const [jobDescriptions] = useState([
-    { 
-      id: '1', 
-      categoryId: '1', 
-      title: 'Senior Frontend Developer', 
-      description: 'We are looking for a Senior Frontend Developer with 5+ years of experience in React...',
-      uploadedAt: '2023-09-10T08:30:00Z',
-      fileName: 'senior_frontend_dev_jd.pdf'
-    },
-    { 
-      id: '2', 
-      categoryId: '1', 
-      title: 'Backend Engineer', 
-      description: 'Backend Engineer with strong knowledge of Node.js, Express, and MongoDB...',
-      uploadedAt: '2023-09-15T14:20:00Z',
-      fileName: 'backend_engineer_jd.pdf'
-    },
-    { 
-      id: '3', 
-      categoryId: '2', 
-      title: 'Product Manager - Mobile Apps', 
-      description: 'Product Manager with experience in mobile app development and user research...',
-      uploadedAt: '2023-09-20T11:45:00Z',
-      fileName: 'product_manager_mobile_jd.pdf'
-    },
-  ]);
-
-  const [candidates, setCandidates] = useState([
-    {
-      id: '1',
-      resumeId: 'r1',
-      candidateName: 'John Smith',
-      shortlisted: true,
-      matchingScore: 85,
-      reason: 'Strong experience in React, Redux, and TypeScript. 6 years of frontend development experience.'
-    },
-    {
-      id: '2',
-      resumeId: 'r2',
-      candidateName: 'Emily Johnson',
-      shortlisted: true,
-      matchingScore: 92,
-      reason: 'Perfect match for required skills. 8 years of experience with modern frontend frameworks.'
-    },
-    {
-      id: '3',
-      resumeId: 'r3',
-      candidateName: 'Michael Brown',
-      shortlisted: false,
-      matchingScore: 65,
-      reason: 'Missing key experience with TypeScript and state management libraries.'
-    },
-    {
-      id: '4',
-      resumeId: 'r4',
-      candidateName: 'Sarah Wilson',
-      shortlisted: true,
-      matchingScore: 78,
-      reason: 'Good match for core skills, but limited experience with required testing frameworks.'
-    },
-    {
-      id: '5',
-      resumeId: 'r5',
-      candidateName: 'David Lee',
-      shortlisted: false,
-      matchingScore: 45,
-      reason: 'Insufficient experience and missing several key required skills.'
-    },
-  ]);
-
-  const [selectedJob, setSelectedJob] = useState('1');
+  // State management
+  const [jobDescriptions, setJobDescriptions] = useState([]);
+  const [candidates, setCandidates] = useState([]);
+  const [selectedJob, setSelectedJob] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [sortConfig, setSortConfig] = useState({
@@ -82,6 +14,148 @@ const Candidates = () => {
   });
   const [filterShortlisted, setFilterShortlisted] = useState('all');
   const [resumeFiles, setResumeFiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([]);
+
+  // Fetch job descriptions when component mounts
+  useEffect(() => {
+    fetchJobDescriptions();
+  }, []);
+
+  // Fetch candidates when selected job changes
+  useEffect(() => {
+    if (selectedJob) {
+      fetchCandidates(selectedJob);
+    }
+  }, [selectedJob]);
+
+  // Fetch job descriptions from backend
+  const fetchJobDescriptions = async () => {
+    try {
+      const u = JSON.parse(localStorage.getItem("user"));
+      
+      if (!u || !u.userId) {
+        setError("User information not found");
+        return;
+      }
+      
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/recruiter/getAllJobs/${u.userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      
+      const data = await response.json();
+      
+      let tempResumeFiles = [];
+      
+      data.forEach((job) => {
+        setCategories((prev) => {
+          if (!prev.find((cat) => cat.id === job.categoryId)) {
+            return [...prev, {id: job.categoryId, name: job.category}];
+          }
+          return prev;
+        });
+        
+        setJobDescriptions((prev) => {
+          if (prev.some((existingJob) => existingJob.id === job._id)) {
+            return prev;
+          }
+          return [
+            ...prev,
+            {
+              id: job._id,
+              category: job.category,
+              title: job.title,
+              description: job.description,
+              uploadedAt: job.createdAt,
+              initiator: job.initiator,
+            },
+          ];
+        });
+        
+        // Set the resumes for each job
+        const res = job?.resumes || [];
+        
+        if (res && res.length > 0) {
+          tempResumeFiles = [...tempResumeFiles, ...res.map((resume) => resume?.name)];
+        }
+      });
+      
+      setResumeFiles(tempResumeFiles);
+    } catch (error) {
+      setError("Error fetching jobs");
+      console.error("Error fetching jobs:", error);
+    }
+  };
+
+  // Fetch candidates for selected job
+  const fetchCandidates = async (jobId) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/process-resumes/job/${jobId}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch candidates');
+      }
+      const data = await response.json();
+      console.log(data)
+      setCandidates(data?.data);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error fetching candidates:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle job selection change
+  const handleJobChange = (e) => {
+    setSelectedJob(e.target.value);
+  };
+
+  // Handle file upload
+  const handleUploadResumes = async () => {
+    if (resumeFiles.length === 0 || !selectedJob) return;
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const formData = new FormData();
+      formData.append('jobId', selectedJob);
+      
+      resumeFiles.forEach(file => {
+        formData.append('resumes', file);
+      });
+      
+      const response = await fetch('/api/upload-resumes', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to upload resumes');
+      }
+      
+      // Refresh candidates list after successful upload
+      await fetchCandidates(selectedJob);
+      setShowUploadModal(false);
+      setResumeFiles([]);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error uploading resumes:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSort = (key) => {
     let direction = 'ascending';
@@ -91,35 +165,12 @@ const Candidates = () => {
     setSortConfig({ key, direction });
   };
 
-  const handleUploadResumes = () => {
-    // In a real application, this would upload the files to a server
-    // and process them against the selected job description
-    
-    // Mock implementation: add random candidates
-    if (resumeFiles.length > 0) {
-      const newCandidates = resumeFiles.map((file, index) => ({
-        id: `new-${Date.now()}-${index}`,
-        resumeId: `r-new-${Date.now()}-${index}`,
-        candidateName: file.name.split('.')[0].replace(/_/g, ' '),
-        shortlisted: Math.random() > 0.5,
-        matchingScore: Math.floor(Math.random() * 60) + 40,
-        reason: Math.random() > 0.5 
-          ? 'Good match for required skills, but limited experience.' 
-          : 'Missing some key required skills and experience.'
-      }));
-      
-      setCandidates([...candidates, ...newCandidates]);
-      setShowUploadModal(false);
-      setResumeFiles([]);
-    }
-  };
-
   // Apply sorting
   const sortedCandidates = [...candidates].sort((a, b) => {
-    if (a[sortConfig.key]  < b[sortConfig.key ]) {
+    if (a[sortConfig.key] < b[sortConfig.key]) {
       return sortConfig.direction === 'ascending' ? -1 : 1;
     }
-    if (a[sortConfig.key ] > b[sortConfig.key ]) {
+    if (a[sortConfig.key] > b[sortConfig.key]) {
       return sortConfig.direction === 'ascending' ? 1 : -1;
     }
     return 0;
@@ -142,19 +193,32 @@ const Candidates = () => {
         <h1 className="text-2xl font-bold">Candidates</h1>
         
         <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
-          <select
-            value={selectedJob}
-            onChange={(e) => setSelectedJob(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          >
-            {jobDescriptions.map((job) => (
-              <option key={job.id} value={job.id}>
-                {job.title}
-              </option>
-            ))}
-          </select>
-          
-          
+          {isLoading && jobDescriptions.length === 0 ? (
+            <div className="text-gray-500">Loading job descriptions...</div>
+          ) : error && jobDescriptions.length === 0 ? (
+            <div className="text-red-500">{error}</div>
+          ) : (
+            <>
+              <select
+                value={selectedJob}
+                onChange={handleJobChange}
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">Select a job</option>
+                {jobDescriptions.length === 0 ? (
+                  <option value="" disabled>No jobs available</option>
+                ) : (
+                  jobDescriptions.map((job) => (
+                    <option key={job.id} value={job.id}>
+                      {job.title}
+                    </option>
+                  ))
+                )}
+              </select>
+              
+                
+            </>
+          )}
         </div>
       </div>
 
@@ -191,160 +255,98 @@ const Candidates = () => {
 
       {/* Candidates Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <button 
-                    className="flex items-center"
-                    onClick={() => handleSort('candidateName')}
-                  >
-                    Candidate Name
-                    <ArrowUpDown size={14} className="ml-1" />
-                  </button>
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <button 
-                    className="flex items-center"
-                    onClick={() => handleSort('shortlisted')}
-                  >
-                    Status
-                    <ArrowUpDown size={14} className="ml-1" />
-                  </button>
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <button 
-                    className="flex items-center"
-                    onClick={() => handleSort('matchingScore')}
-                  >
-                    Matching Score
-                    <ArrowUpDown size={14} className="ml-1" />
-                  </button>
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Reason
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredCandidates.map((candidate) => (
-                <tr key={candidate.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{candidate.candidateName}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      candidate.shortlisted 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {candidate.shortlisted 
-                        ? <CheckCircle size={14} className="mr-1" /> 
-                        : <XCircle size={14} className="mr-1" />
-                      }
-                      {candidate.shortlisted ? 'Shortlisted' : 'Rejected'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="w-full bg-gray-200 rounded-full h-2.5">
-                        <div 
-                          className={`h-2.5 rounded-full ${
-                            candidate.matchingScore >= 80 ? 'bg-green-500' :
-                            candidate.matchingScore >= 60 ? 'bg-yellow-500' : 'bg-red-500'
-                          }`}
-                          style={{ width: `${candidate.matchingScore}%` }}
-                        ></div>
-                      </div>
-                      <span className="ml-2 text-sm text-gray-700">{candidate.matchingScore}%</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-gray-500 max-w-md">{candidate.reason}</div>
-                  </td>
+        {isLoading && candidates.length === 0 ? (
+          <div className="p-6 text-center text-gray-500">Loading candidates...</div>
+        ) : error && candidates.length === 0 ? (
+          <div className="p-6 text-center text-red-500">{error}</div>
+        ) : filteredCandidates.length === 0 ? (
+          <div className="p-6 text-center text-gray-500">
+            {searchTerm ? "No candidates match your search criteria" : 
+             selectedJob ? "No candidates available for this job" : "Select a job to view candidates"}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <button 
+                      className="flex items-center"
+                      onClick={() => handleSort('candidateName')}
+                    >
+                      Candidate Name
+                      <ArrowUpDown size={14} className="ml-1" />
+                    </button>
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <button 
+                      className="flex items-center"
+                      onClick={() => handleSort('shortlisted')}
+                    >
+                      Status
+                      <ArrowUpDown size={14} className="ml-1" />
+                    </button>
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <button 
+                      className="flex items-center"
+                      onClick={() => handleSort('matchingScore')}
+                    >
+                      Matching Score
+                      <ArrowUpDown size={14} className="ml-1" />
+                    </button>
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Reason
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredCandidates.map((candidate) => (
+                  <tr key={candidate.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{candidate.candidateName}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        candidate.result  === 'success'
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {candidate.result === 'success' 
+                          ? <CheckCircle size={14} className="mr-1" /> 
+                          : <XCircle size={14} className="mr-1" />
+                        }
+                        {candidate.result }
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                          <div 
+                            className={`h-2.5 rounded-full ${
+                              candidate.matchingScore >= 80 ? 'bg-green-500' :
+                              candidate.matchingScore >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                            }`}
+                            style={{ width: `${candidate.matchingScore}%` }}
+                          ></div>
+                        </div>
+                        <span className="ml-2 text-sm text-gray-700">{candidate.matchingScore}%</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-500 max-w-md">{candidate.reason}</div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Upload Resumes Modal */}
-      {showUploadModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4">Upload Resumes</h2>
-            
-            <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-2">
-                Selected Job: <span className="font-medium">{jobDescriptions.find(job => job.id === selectedJob)?.title}</span>
-              </p>
-              
-              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                <div className="space-y-1 text-center">
-                  <Upload size={24} className="mx-auto text-gray-400" />
-                  <div className="flex text-sm text-gray-600">
-                    <label
-                      htmlFor="resume-upload"
-                      className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none"
-                    >
-                      <span>Upload files</span>
-                      <input
-                        id="resume-upload"
-                        name="resume-upload"
-                        type="file"
-                        className="sr-only"
-                        multiple
-                        accept=".pdf,.doc,.docx"
-                        onChange={(e) => {
-                          if (e.target.files) {
-                            setResumeFiles(Array.from(e.target.files));
-                          }
-                        }}
-                      />
-                    </label>
-                    <p className="pl-1">or drag and drop</p>
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    PDF, DOC, DOCX up to 10MB each
-                  </p>
-                  {resumeFiles.length > 0 && (
-                    <div className="mt-2 text-sm text-indigo-600">
-                      <p>{resumeFiles.length} file(s) selected</p>
-                      <ul className="text-left mt-1 ml-4 list-disc">
-                        {resumeFiles.slice(0, 3).map((file, index) => (
-                          <li key={index}>{file.name}</li>
-                        ))}
-                        {resumeFiles.length > 3 && <li>...and {resumeFiles.length - 3} more</li>}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => {
-                  setShowUploadModal(false);
-                  setResumeFiles([]);
-                }}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleUploadResumes}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-                disabled={resumeFiles.length === 0}
-              >
-                Process Resumes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 };

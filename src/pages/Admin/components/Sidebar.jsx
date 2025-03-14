@@ -3,8 +3,8 @@ import {LayoutDashboard, Users, FileText, FileSearch, LogOut, Menu} from "lucide
 import {useNavigate} from "react-router-dom"
 
 export const Sidebar = ({activeTab, setActiveTab}) => {
-	const [isCollapsed, setIsCollapsed] = useState(false)
-
+	const [isCollapsed, setIsCollapsed] = useState(true)
+  //sidebar responsive
 	const menuItems = [
 		{id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} />},
 		{id: "users", label: "User Management", icon: <Users size={20} />},
@@ -62,7 +62,7 @@ export const Sidebar = ({activeTab, setActiveTab}) => {
 			{/* Logout Button */}
 			<div className="p-4 border-t border-gray-700">
 				<button
-					className="flex items-center text-gray-300 hover:text-white w-full"
+					className="flex items-center text-gray-300 hover:text-black w-full"
 					onClick={handleLogout}
 				>
 					<LogOut size={20} className="mr-3" />

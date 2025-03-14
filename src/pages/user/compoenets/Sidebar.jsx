@@ -1,5 +1,5 @@
 import React, {useState} from "react"
-import {LayoutDashboard, FileText, FileSearch, LogOut, Menu} from "lucide-react"
+import {LayoutDashboard, FileText, FileSearch, User, LogOut, Menu} from "lucide-react"
 import {useNavigate} from "react-router-dom"
 
 export const Sidebar = ({activeTab, setActiveTab}) => {
@@ -8,8 +8,9 @@ export const Sidebar = ({activeTab, setActiveTab}) => {
 	const menuItems = [
 		{id: "userdashboard", label: "Dashboard", icon: <LayoutDashboard size={20} />},
 		{id: "jobsdesc", label: "Job Descriptions", icon: <FileText size={20} />},
-		{id: "candidates", label: "Candidates", icon: <FileSearch size={20} />},
+		{id: "jobeval", label: "Resume Evals", icon: <FileSearch size={20} />},
 	]
+	////Hiiii FOr commit
 	const navigate = useNavigate()
 	const handleLogout = () => {
 		localStorage.removeItem("token")
@@ -60,7 +61,7 @@ export const Sidebar = ({activeTab, setActiveTab}) => {
 
 			{/* Logout Button */}
 			<div className="p-4 border-t border-gray-700" onClick={handleLogout}>
-				<button className="flex items-center text-gray-300 hover:text-white w-full">
+				<button className="flex items-center text-gray-300 hover:text-black w-full">
 					<LogOut size={20} className="mr-3" />
 					{!isCollapsed && "Logout"}
 				</button>
