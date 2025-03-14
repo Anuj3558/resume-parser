@@ -3,7 +3,7 @@ import {LayoutDashboard, Users, FileText, FileSearch, LogOut, Menu} from "lucide
 import {useNavigate} from "react-router-dom"
 
 export const Sidebar = ({activeTab, setActiveTab}) => {
-	const [isCollapsed, setIsCollapsed] = useState(false)
+	const [isCollapsed, setIsCollapsed] = useState(true)
 
 	const menuItems = [
 		{id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} />},
