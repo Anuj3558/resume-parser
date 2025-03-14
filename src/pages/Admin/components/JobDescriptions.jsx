@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import JobTable from "../components/JobTable";
 import JobForm from "../components/JobForm";
-import JobPanel from "./JobPanel";
+// import JobPanel from "./JobPanel";
 import Modal from "../components/Modal";
 import { Plus, Search, Filter } from "lucide-react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import { BASE_URL } from "../../constants";
+import useNotification from "../../../components/Notification";
 
 const API_URL = `${BASE_URL}/job/jobs`;
 
@@ -24,6 +25,7 @@ export const JobDescriptions = () => {
     name: "",
     id: "",
   });
+  const { contextHolder, openNotification } = useNotification();
 
   // 🔹 Fetch Jobs from Backend
   useEffect(() => {
@@ -94,16 +96,19 @@ export const JobDescriptions = () => {
   const handleAssignRecruiter = (job) => {
     if (!job) return; // Ensure job exists
     setSelectedJobForAssign(job);
-    fetchRecruiters();
     setIsAssignModalOpen(true);
     // setSelectedJobForAssign(job);
     // setIsAssignModalOpen(true);
   };
   const handleDisassignRecruiter = async (job, recruiter) => {
-    await axios.delete(
-      process.env.REACT_APP_BACKEND_URL +
-        `/job/jobs/unassign/${job._id}/${recruiter._id}`
-    );
+    try {
+      await axios.delete(
+        process.env.REACT_APP_BACKEND_URL +
+          `/job/jobs/unassign/${job._id}/${recruiter._id}`
+      );
+    } catch (error) {
+      openNotification("error", "Error", `Could not unassign user, ${error}`);
+    }
     // setSelectedJobForAssign(job);
     fetchRecruiters();
     // setIsAssignModalOpen(true);
@@ -178,6 +183,7 @@ export const JobDescriptions = () => {
 
   return (
     <div className="space-y-6">
+      {contextHolder}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">Job Descriptions</h1>
         <button
