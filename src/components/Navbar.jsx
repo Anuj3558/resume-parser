@@ -1,9 +1,20 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Menu, X, Github, Twitter, Linkedin, Mail, ChevronRight, CircuitBoard, Binary, LogOut } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  Menu,
+  X,
+  Github,
+  Twitter,
+  Linkedin,
+  Mail,
+  ChevronRight,
+  CircuitBoard,
+  Binary,
+  LogOut,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,37 +26,37 @@ const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
     // Check authentication status
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     setIsAuthenticated(!!token);
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setIsAuthenticated(false);
-    navigate('/login');
+    navigate("/login");
   };
 
   // Navigation items based on auth status
   const getNavItems = () => {
-    const role = JSON.parse(localStorage.getItem('user'))?.role
+    const role = JSON.parse(localStorage.getItem("user"))?.role;
     if (isAuthenticated) {
       return [
-        { name: 'Dashboard', href: `/${role?.toLowerCase()}-dashboard` },
-        { name: 'Process Resume', href: '/res' },
-        { name: 'Profile', href: '/profile' }
+        { name: "Dashboard", href: `/${role?.toLowerCase()}-dashboard` },
+        { name: "Process Resume", href: "/res" },
+        { name: "Profile", href: "/profile" },
       ];
     }
     return [
-      { name: 'Home', href: '/' },
-      { name: 'About', href: '#about' },
-      { name: 'Features', href: '#features' },
-      { name: 'Contact', href: '#contact' }
+      { name: "Home", href: "/" },
+      { name: "About", href: "#about" },
+      { name: "Features", href: "#features" },
+      { name: "Contact", href: "#contact" },
     ];
   };
 
@@ -54,7 +65,9 @@ const Navbar = () => {
   return (
     <motion.nav
       className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-black/80 backdrop-blur-lg' : 'bg-transparent'
+        isScrolled || isMobileMenuOpen
+          ? "bg-black/80 backdrop-blur-lg"
+          : "bg-transparent"
       }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -63,11 +76,8 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <motion.div 
-            className="flex-shrink-0"
-            whileHover={{ scale: 1.05 }}
-          >
-            <a href={isAuthenticated ? '/dashboard' : '/'}>
+          <motion.div className="flex-shrink-0" whileHover={{ scale: 1.05 }}>
+            <a href={isAuthenticated ? "/dashboard" : "/"}>
               <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
                 ANTRIXSH
               </span>
@@ -85,12 +95,10 @@ const Navbar = () => {
                   whileHover={{ scale: 1.05 }}
                 >
                   {item.name}
-                  <motion.div 
-                    className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-500 group-hover:w-full transition-all duration-300"
-                  />
+                  <motion.div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-500 group-hover:w-full transition-all duration-300" />
                 </motion.a>
               ))}
-              
+
               {!isAuthenticated ? (
                 <div className="flex space-x-4">
                   <motion.a
@@ -136,12 +144,15 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         <motion.div
-          className={`md:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}
+          className={`md:hidden ${isMobileMenuOpen ? "block" : "hidden"}`}
           initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: isMobileMenuOpen ? 1 : 0, height: isMobileMenuOpen ? 'auto' : 0 }}
+          animate={{
+            opacity: isMobileMenuOpen ? 1 : 0,
+            height: isMobileMenuOpen ? "auto" : 0,
+          }}
           transition={{ duration: 0.3 }}
         >
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 ">
             {navItems.map((item) => (
               <motion.a
                 key={item.name}
@@ -153,7 +164,7 @@ const Navbar = () => {
                 {item.name}
               </motion.a>
             ))}
-            
+
             {!isAuthenticated ? (
               <div className="space-y-2 pt-2">
                 <motion.a
@@ -192,16 +203,16 @@ const Footer = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     setIsAuthenticated(!!token);
   }, []);
 
   // Footer links based on auth status
   const getFooterLinks = () => {
     if (isAuthenticated) {
-      return ['Dashboard', 'Process Resume', 'Profile', 'Settings'];
+      return ["Dashboard", "Process Resume", "Profile", "Settings"];
     }
-    return ['Home', 'About', 'Features', 'Contact'];
+    return ["Home", "About", "Features", "Contact"];
   };
 
   const footerLinks = getFooterLinks();
@@ -209,7 +220,7 @@ const Footer = () => {
   return (
     <footer className="bg-black text-white relative overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#080808_1px,transparent_1px),linear-gradient(to_bottom,#080808_1px,transparent_1px)] bg-[size:24px_24px] opacity-20" />
-      
+
       <motion.div
         animate={{
           y: [-10, 10, -10],
@@ -218,13 +229,13 @@ const Footer = () => {
         transition={{
           duration: 5,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: "easeInOut",
         }}
         className="absolute top-10 left-10"
       >
         <CircuitBoard className="w-8 h-8 text-blue-500/20" />
       </motion.div>
-      
+
       <motion.div
         animate={{
           y: [10, -10, 10],
@@ -233,7 +244,7 @@ const Footer = () => {
         transition={{
           duration: 6,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: "easeInOut",
         }}
         className="absolute bottom-10 right-10"
       >
@@ -259,7 +270,11 @@ const Footer = () => {
               {footerLinks.map((item) => (
                 <motion.a
                   key={item}
-                  href={`${item.toLowerCase() === 'home' ? '/' : `/${item.toLowerCase().replace(' ', '-')}`}`}
+                  href={`${
+                    item.toLowerCase() === "home"
+                      ? "/"
+                      : `/${item.toLowerCase().replace(" ", "-")}`
+                  }`}
                   className="text-gray-400 hover:text-white"
                   whileHover={{ x: 5 }}
                 >
@@ -274,10 +289,10 @@ const Footer = () => {
             <h4 className="text-lg font-semibold">Connect With Us</h4>
             <div className="flex space-x-4">
               {[
-                { Icon: Github, href: '#' },
-                { Icon: Twitter, href: '#' },
-                { Icon: Linkedin, href: '#' },
-                { Icon: Mail, href: '#' }
+                { Icon: Github, href: "#" },
+                { Icon: Twitter, href: "#" },
+                { Icon: Linkedin, href: "#" },
+                { Icon: Mail, href: "#" },
               ].map(({ Icon, href }, index) => (
                 <motion.a
                   key={index}
@@ -300,10 +315,18 @@ const Footer = () => {
               © 2025 ANTRIXSH. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <motion.a href="/privacy" className="text-gray-400 hover:text-white text-sm" whileHover={{ x: 2 }}>
+              <motion.a
+                href="/privacy"
+                className="text-gray-400 hover:text-white text-sm"
+                whileHover={{ x: 2 }}
+              >
                 Privacy Policy
               </motion.a>
-              <motion.a href="/terms" className="text-gray-400 hover:text-white text-sm" whileHover={{ x: 2 }}>
+              <motion.a
+                href="/terms"
+                className="text-gray-400 hover:text-white text-sm"
+                whileHover={{ x: 2 }}
+              >
                 Terms of Service
               </motion.a>
             </div>
