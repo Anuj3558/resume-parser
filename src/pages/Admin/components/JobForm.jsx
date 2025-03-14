@@ -20,6 +20,7 @@ const JobForm = ({job, onSubmit, onCancel}) => {
 				description: job.description,
 				requirements: job.requirements,
 				location: job.location,
+				initiator: localStorage.getItem("user").id
 			})
 		}
 		axios
@@ -71,6 +72,7 @@ const JobForm = ({job, onSubmit, onCancel}) => {
 					id="category"
 					name="category"
 					value={formData.category}
+					default={`Select category`}
 					onChange={handleChange}
 					className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 				>

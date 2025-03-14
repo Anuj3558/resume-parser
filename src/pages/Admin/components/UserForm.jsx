@@ -1,49 +1,44 @@
 import React, { useState, useEffect } from "react";
 
-export const UserForm = ({ user, onSuccess }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "",
-    status: "ACTIVE",
-  });
+export const UserForm = ({user, onSuccess}) => {
+	const [formData, setFormData] = useState({
+		name: "",
+		email: "",
+		password: "",
+		status: "ACTIVE",
+	})
 
-  useEffect(() => {
-    if (user) {
-      setFormData({
-        name: user.name || "",
-        email: user.email || "",
-        password: "", // Empty for security reasons
-        role: user.role || "",
-        status: user.status || "ACTIVE",
-      });
-    }
-  }, [user]);
+	useEffect(() => {
+		if (user) {
+			setFormData({
+				name: "",
+				email: "",
+				password: "",
+				status: "ACTIVE",
+			})
+		}
+	}, [user])
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+	const handleChange = (e) => {
+		const {name, value} = e.target
+		setFormData({
+			...formData,
+			[name]: value,
+		})
+	}
 
-  const submitUser = async () => {
-    try {
-      const url = user 
-        ? `${process.env.REACT_APP_BACKEND_URL}/user/updateUser` 
-        : `${process.env.REACT_APP_BACKEND_URL}/user/addUser`;
-
-      const method = user ? "PUT" : "POST";
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+	const addUser = async (userData) => {
+		try {
+			const response = await fetch(
+				`${process.env.REACT_APP_BACKEND_URL}/user/addUser`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(formData),
+				}
+			)
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -89,53 +84,43 @@ export const UserForm = ({ user, onSuccess }) => {
         />
       </div>
 
-      {/* Email */}
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email
-        </label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          className="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-        />
-      </div>
+			{/* Email */}
+			<div>
+				<label
+					htmlFor="email"
+					className="block text-sm font-medium text-gray-700"
+				>
+					Email
+				</label>
+				<input
+					type="email"
+					id="email"
+					name="email"
+					value={formData.email}
+					onChange={handleChange}
+					required
+					className="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+				/>
+			</div>
 
-      {/* Password */}
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-          Password
-        </label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          required={!user} // Only require for new users
-          className="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-        />
-      </div>
-
-      {/* Role */}
-      <div>
-        <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-          Job Role
-        </label>
-        <input
-          type="text"
-          id="role"
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          required
-          className="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-        />
-      </div>
+			{/* Role */}
+			<div>
+				<label
+					htmlFor="password"
+					className="block text-sm font-medium text-gray-700"
+				>
+					Password
+				</label>
+				<input
+					type="password"
+					id="pasrdswo"
+					name="password"
+					value={formData.role}
+					onChange={handleChange}
+					required
+					className="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+				/>
+			</div>
 
       {/* Status */}
       <div>

@@ -61,7 +61,7 @@ const Login = () => {
 					"Login Successful",
 					"Welcome back! You are now being redirected."
 				)
-
+				console.log(data)
 				const role = data?.user?.role
 				console.log(data?.user)
 				const route = role?.toLowerCase()

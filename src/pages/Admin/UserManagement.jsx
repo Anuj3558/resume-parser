@@ -29,12 +29,12 @@ const UserManagement = () => {
 
 	useEffect(() => {
 		fetchUsers()
-	}, [isModalOpen])
+	}, [isModalOpen, isModalForEditOpen])
 
 	const handleAddUser = async () => {
 		setCurrentUser(undefined)
-		fetchUsers()
 		setIsModalOpen(true)
+		fetchUsers()
 	}
 
 	const handleEditUser = async (user) => {
