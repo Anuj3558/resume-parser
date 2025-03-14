@@ -1,1 +1,1 @@
-export const BASE_URL = "https://resume-parser-shortlisting.vercel.app"
+export const BASE_URL = "https://resume-parser-backend-4qa5.onrender.com"
