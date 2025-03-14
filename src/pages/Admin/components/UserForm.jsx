@@ -55,7 +55,7 @@ export const UserForm = ({user, onSuccess}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await submitUser();
+      await addUser();
       onSuccess();
     } catch (error) {
       // Add error handling UI here
