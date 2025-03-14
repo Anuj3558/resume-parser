@@ -61,7 +61,7 @@ export const Sidebar = ({activeTab, setActiveTab}) => {
 
 			{/* Logout Button */}
 			<div className="p-4 border-t border-gray-700" onClick={handleLogout}>
-				<button className="flex items-center text-gray-300 hover:text-white w-full">
+				<button className="flex items-center text-gray-300 hover:text-black w-full">
 					<LogOut size={20} className="mr-3" />
 					{!isCollapsed && "Logout"}
 				</button>

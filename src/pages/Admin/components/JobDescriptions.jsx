@@ -88,6 +88,11 @@ const handleAssignRecruiter = (job) => {
   fetchRecruiters();
   setIsAssignModalOpen(true);
 };
+const handleDisassignRecruiter = (job) => {
+  setSelectedJobForAssign(job);
+  fetchRecruiters();
+  setIsAssignModalOpen(true);
+};
 const fetchRecruiters = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/user/getUsers`);
@@ -184,6 +189,7 @@ const handleSubmitAssignment = async () => {
           onEdit={handleEditJob}
           onDelete={handleDeleteJob}
           onAssign={(job) => handleAssignRecruiter(job)} // Add this
+          onDisassign={job => handleDisassignRecruiter(job)}
         />
       </div>
 
@@ -227,14 +233,49 @@ const handleSubmitAssignment = async () => {
       <Modal
         isOpen={isAssignModalOpen}
         onClose={() => setIsAssignModalOpen(false)}
-        title="Assign Recruiter"
+        title="Assign Recruiters"
       >
+        {/* Table for Assigned Recruiters */}
+        <table className="w-full border-collapse border border-gray-300 mt-4">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border p-2">Name</th>
+              <th className="border p-2">Email</th>
+              <th className="border p-2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {selectedJob.assigned.length > 0 ? (
+              selectedJob.assigned.map((recruiter) => (
+                <tr key={recruiter.id} className="text-center">
+                  <td className="border p-2">{recruiter.name}</td>
+                  <td className="border p-2">{recruiter.email}</td>
+                  <td className="border p-2">
+                    <button
+                      className="bg-red-400 text-white px-3 py-1 rounded hover:bg-red-500"
+                      onClick={() => handleDisassignRecruiter(recruiter._id)}
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3" className="p-3 text-gray-500">
+                  No recruiters assigned.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+
         <select
           value={selectedRecruiter.name}
           onChange={(e) => setSelectedRecruiter({"name":e.target.options[e.target.selectedIndex].dataset.name, "id": e.target.value})}
           className="border p-2 w-full"
         >
-          <option value="">Select a recruiter</option>
+          <option value="">Assign a new recruiter</option>
           {recruiters.map((recruiter) => (
             <option key={recruiter._id} value={recruiter._id} data-name={recruiter.name} >
               {recruiter.name}
@@ -247,6 +288,7 @@ const handleSubmitAssignment = async () => {
         >
           Assign
         </button>
+
       </Modal>
       {/* 🔹 Job Details Panel */}
       {/* {selectedJob && (
