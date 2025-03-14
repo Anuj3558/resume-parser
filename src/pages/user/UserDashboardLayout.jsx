@@ -15,7 +15,6 @@ function UserDashboardLayout() {
         <main className="flex-1 overflow-y-auto p-4">
           {activeTab === 'userdashboard' && <UserDashboard />}
           {activeTab === 'jobsdesc' && <JobDescriptions setActiveTab = {setActiveTab}/>}
-          {activeTab === 'candidates' && <Candidates />}
           {activeTab === 'jobeval' && <ResumeEvaluation />}
         </main>
       </div>
