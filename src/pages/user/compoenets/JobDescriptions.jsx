@@ -6,7 +6,7 @@ import axios from "axios"
 import Cookie from "js-cookie"
 import {Upload, Plus, FileText, Download, Trash2, List, CheckCircle} from "lucide-react"
 
-const JobDescriptions = (setActiveTab) => {
+const JobDescriptions = ({setActiveTab}) => {
 	const JOB_API_URL = `${BASE_URL}/job/jobs`
 
 	const [isModalOpen, setIsModalOpen] = useState(false)
@@ -178,7 +178,6 @@ const JobDescriptions = (setActiveTab) => {
 							},
 						}
 					);
-			
 					// Handle the response
 					if (response.data) {
 						alert("Resumes processed successfully!");
