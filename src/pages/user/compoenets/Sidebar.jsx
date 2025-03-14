@@ -10,6 +10,7 @@ export const Sidebar = ({activeTab, setActiveTab}) => {
 		{id: "jobsdesc", label: "Job Descriptions", icon: <FileText size={20} />},
 		{id: "jobeval", label: "Resume Evals", icon: <FileSearch size={20} />},
 	]
+	////Hiiii FOr commit
 	const navigate = useNavigate()
 	const handleLogout = () => {
 		localStorage.removeItem("token")
