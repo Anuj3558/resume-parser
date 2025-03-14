@@ -128,6 +128,9 @@ const ResumeEvaluation = () => {
                   <td className="px-6 py-4 text-sm text-gray-500">
                     {resume?.evaluation?.city}
                   </td>
+                  <td className="px-6 py-4 text-sm text-gray-500">
+                    {resume?.evaluation?.matching?.score}
+                  </td>
                 </tr>
               ))}
             </tbody>
