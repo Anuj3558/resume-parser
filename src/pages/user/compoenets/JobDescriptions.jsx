@@ -682,19 +682,7 @@ const JobDescriptions = ({setActiveTab}) => {
                   <p className="text-xs text-gray-500">
                     PDF, DOC, DOCX up to 10MB each
                   </p>
-                  {resumeFiles.length > 0 && (
-                    <div className="mt-2 text-sm text-indigo-600">
-                      <p>{resumeFiles.length} file(s) selected</p>
-                      <ul className="text-left mt-1 ml-4 list-disc">
-                        {resumeFiles.slice(0, 3).map((file, index) => (
-                          <li key={index}>{file.name}</li>
-                        ))}
-                        {resumeFiles.length > 3 && (
-                          <li>...and {resumeFiles.length - 3} more</li>
-                        )}
-                      </ul>
-                    </div>
-                  )}
+               
                 </div>
               </div>
             </div>
