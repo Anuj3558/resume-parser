@@ -26,6 +26,53 @@ const JobDescriptions = (setActiveTab) => {
 	const [showUploadedResumes, setShowUploadedResumes] = useState(null)
 	const [jobResumes, setJobResumes] = useState({})
 
+	useEffect(() => {
+		const u = JSON.parse(localStorage.getItem("user"))
+		console.log(u.userId)
+		const fetchJobs = async () => {
+			try {
+				const response = await fetch(
+					`${process.env.REACT_APP_BACKEND_URL}/recruiter/getAllJobs/${u.userId}`,
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+						},
+					}
+				)
+				const data = await response.json()
+				data.forEach((job) => {
+					setCategories((prev) => {
+						if (!prev.find((cat) => cat.id === job.categoryId)) {
+							return [...prev, {id: job.categoryId, name: job.category}]
+						}
+						return prev
+					})
+					setJobDescriptions((prev) => {
+						if (prev.some((existingJob) => existingJob.id === job._id)) {
+							return prev
+						}
+						return [
+							...prev,
+							{
+								id: job._id,
+								category: job.category,
+								title: job.title,
+								description: job.description,
+								uploadedAt: job.createdAt,
+							},
+						]
+					})
+				})
+				console.log(data)
+			} catch (error) {
+				console.error("Error fetching jobs:", error)
+			}
+		}
+
+		fetchJobs()
+	}, [])
+
 	const handleSubmitJob = async (jobData) => {
 		try {
 			if (currentJob) {
@@ -51,7 +98,7 @@ const JobDescriptions = (setActiveTab) => {
 			console.error("Error saving job:", error)
 		}
 	}
-	
+
 	const handleAddJobDescription = () => {
 		if (!selectedCategory || !jobTitle || !jobFile) return
 
@@ -95,104 +142,104 @@ const JobDescriptions = (setActiveTab) => {
 			? jobDescriptions
 			: jobDescriptions.filter((jd) => jd.categoryId === selectedFilter)
 
-			const handleUploadResumes = async (jobId) => {
-				if (resumeFiles.length === 0) {
-				  alert('Please select files to upload');
-				  return;
-				}
-			  
-				try {
-				  // Create form data to send files
-				  const formData = new FormData();
-				  // Append each file to the form data with the field name 'resume'
-				  resumeFiles.forEach(file => {
-					formData.append('resume', file);
-				  });
-				  const u = JSON.parse(localStorage.getItem("user"))
-	           formData.append("userId",u.userId)
-				  // Show loading state (you might want to add a loading state to your component)
-				  // setIsUploading(true);
-				  
-				  // Send the files to the backend
-				  const response = await axios.post(
-					`${BASE_URL}/upload-resume/${jobId}`,
-					formData,
-					{
-					  headers: {
-						'Content-Type': 'multipart/form-data',
+	const handleUploadResumes = async (jobId) => {
+		if (resumeFiles.length === 0) {
+			alert("Please select files to upload")
+			return
+		}
+
+		try {
+			// Create form data to send files
+			const formData = new FormData()
+			// Append each file to the form data with the field name 'resume'
+			resumeFiles.forEach((file) => {
+				formData.append("resume", file)
+			})
+			const u = JSON.parse(localStorage.getItem("user"))
+			formData.append("userId", u.userId)
+			// Show loading state (you might want to add a loading state to your component)
+			// setIsUploading(true);
+
+			// Send the files to the backend
+			const response = await axios.post(
+				`${BASE_URL}/upload-resume/${jobId}`,
+				formData,
+				{
+					headers: {
+						"Content-Type": "multipart/form-data",
 						// Include authentication token if needed
-						'Authorization': `Bearer ${localStorage.getItem('token')}`
-					  }
-					}
-				  );
-				  
-				  // Update the local state with the uploaded resumes
-				  if (response.data.success) {
-					// Get the updated job with new resume information
-					const updatedJob = response.data.job;
-					
-					// Update job resumes in local state
-					setJobResumes({
-					  ...jobResumes,
-					  [jobId]: updatedJob.resumes
-					});
-					
-					// Show success message
-					alert(`${resumeFiles.length} resume(s) uploaded successfully!`);
-					
-					// Reset the file selection
-					setResumeFiles([]);
-					setShowUploadFile(false);
-					
-					// Optionally: Refresh job list to show updated resume count
-					// fetchJobs();
-				  }
-				} catch (error) {
-				  console.error('Error uploading resumes:', error);
-				  
-				  // Show specific error message if available
-				  if (error.response && error.response.data && error.response.data.error) {
-					alert(`Upload failed: ${error.response.data.error}`);
-				  } else {
-					alert('Failed to upload resumes. Please try again.');
-				  }
-				} finally {
-				  // Hide loading state
-				  // setIsUploading(false);
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
 				}
-			  };
-	
-			  const handleProcessResumes = async (jobId) => {
-				try {
-					// Get the user ID from localStorage
-					const user = JSON.parse(localStorage.getItem("user"));
-					const userId = user.userId;
-			
-					// Send a POST request to the backend to process resumes
-					const response = await axios.post(
-						`${BASE_URL}/process-resumes/${jobId}/${ userId }`,
-						{
-							headers: {
-								"Content-Type": "application/json",
-								Authorization: `Bearer ${localStorage.getItem("token")}`,
-							},
-						}
-					);
-			
-					// Handle the response
-					if (response.data) {
-						alert("Resumes processed successfully!");
-						setActiveTab("candidates")
-						// Optionally, you can update the UI or refresh the job list
-						// fetchJobs();
-					} else {
-						alert("Failed to process resumes. Please try again.");
-					}
-				} catch (error) {
-					console.error("Error processing resumes:", error);
-					alert("An error occurred while processing resumes. Please try again.");
+			)
+
+			// Update the local state with the uploaded resumes
+			if (response.data.success) {
+				// Get the updated job with new resume information
+				const updatedJob = response.data.job
+
+				// Update job resumes in local state
+				setJobResumes({
+					...jobResumes,
+					[jobId]: updatedJob.resumes,
+				})
+
+				// Show success message
+				alert(`${resumeFiles.length} resume(s) uploaded successfully!`)
+
+				// Reset the file selection
+				setResumeFiles([])
+				setShowUploadFile(false)
+
+				// Optionally: Refresh job list to show updated resume count
+				// fetchJobs();
+			}
+		} catch (error) {
+			console.error("Error uploading resumes:", error)
+
+			// Show specific error message if available
+			if (error.response && error.response.data && error.response.data.error) {
+				alert(`Upload failed: ${error.response.data.error}`)
+			} else {
+				alert("Failed to upload resumes. Please try again.")
+			}
+		} finally {
+			// Hide loading state
+			// setIsUploading(false);
+		}
+	}
+
+	const handleProcessResumes = async (jobId) => {
+		try {
+			// Get the user ID from localStorage
+			const user = JSON.parse(localStorage.getItem("user"))
+			const userId = user.userId
+
+			// Send a POST request to the backend to process resumes
+			const response = await axios.post(
+				`${BASE_URL}/process-resumes/${jobId}/${userId}`,
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
 				}
-			};
+			)
+
+			// Handle the response
+			if (response.data) {
+				alert("Resumes processed successfully!")
+				setActiveTab("candidates")
+				// Optionally, you can update the UI or refresh the job list
+				// fetchJobs();
+			} else {
+				alert("Failed to process resumes. Please try again.")
+			}
+		} catch (error) {
+			console.error("Error processing resumes:", error)
+			alert("An error occurred while processing resumes. Please try again.")
+		}
+	}
 
 	useEffect(() => {
 		const u = JSON.parse(localStorage.getItem("user"))
@@ -231,15 +278,13 @@ const JobDescriptions = (setActiveTab) => {
 								initiator: job.initiator,
 							},
 						]
-					}
-				)
-				// Set the resumes for each job
-				const res=job?.resumes;
+					})
+					// Set the resumes for each job
+					const res = job?.resumes
 
-				setResumeFiles(res.map((resume) => (  resume?.name)
-				))
+					setResumeFiles(res.map((resume) => resume?.name))
 				})
-				console.log("PPPPPPPP"+resumeFiles)
+				console.log("PPPPPPPP" + resumeFiles)
 			} catch (error) {
 				console.error("Error fetching jobs:", error)
 			}
@@ -318,20 +363,29 @@ const JobDescriptions = (setActiveTab) => {
 									>
 										<Trash2 size={18} />
 									</button>
-									
+
 									{/* Delete Confirmation Popover */}
 									{showDeleteConfirm === job.id && (
 										<div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-md shadow-lg p-3 z-10 w-64">
-											<p className="text-sm text-gray-700 mb-2">Are you sure you want to delete this job description?</p>
+											<p className="text-sm text-gray-700 mb-2">
+												Are you sure you want to delete this job
+												description?
+											</p>
 											<div className="flex justify-end space-x-2">
-												<button 
-													onClick={() => setShowDeleteConfirm(null)}
+												<button
+													onClick={() =>
+														setShowDeleteConfirm(null)
+													}
 													className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800"
 												>
 													Cancel
 												</button>
-												<button 
-													onClick={() => handleDeleteJobDescription(job.id)}
+												<button
+													onClick={() =>
+														handleDeleteJobDescription(
+															job.id
+														)
+													}
 													className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
 												>
 													Delete
@@ -353,35 +407,50 @@ const JobDescriptions = (setActiveTab) => {
 								<span className="text-xs text-gray-500">
 									Uploaded: {formatDate(job.uploadedAt)}
 								</span>
-								
+
 								{/* Show Uploaded Resumes Button */}
 								<div className="relative">
-									<button 
+									<button
 										onClick={() => setShowUploadedResumes(job.id)}
 										className="flex items-center text-indigo-600 hover:text-indigo-900 text-sm"
 									>
 										<List size={16} className="mr-1" />
 										Show Uploaded Resumes
 									</button>
-									
+
 									{/* Resumes List Popover */}
 									{showUploadedResumes === job.id && (
 										<div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-md shadow-lg p-3 z-10 w-64">
-											<h4 className="font-medium text-gray-800 mb-2">Uploaded Resumes</h4>
-											{jobResumes[job.id] && jobResumes[job.id].length > 0 ? (
+											<h4 className="font-medium text-gray-800 mb-2">
+												Uploaded Resumes
+											</h4>
+											{jobResumes[job.id] &&
+											jobResumes[job.id].length > 0 ? (
 												<ul className="max-h-40 overflow-y-auto">
-													{jobResumes[job.id].map((file, index) => (
-														<li key={index} className="py-1 text-sm text-gray-700 flex items-center">
-															<FileText size={14} className="mr-2 text-indigo-500" />
-															{file.name}
-														</li>
-													))}
+													{jobResumes[job.id].map(
+														(file, index) => (
+															<li
+																key={index}
+																className="py-1 text-sm text-gray-700 flex items-center"
+															>
+																<FileText
+																	size={14}
+																	className="mr-2 text-indigo-500"
+																/>
+																{file.name}
+															</li>
+														)
+													)}
 												</ul>
 											) : (
-												<p className="text-sm text-gray-500">No resumes uploaded yet</p>
+												<p className="text-sm text-gray-500">
+													No resumes uploaded yet
+												</p>
 											)}
-											<button 
-												onClick={() => setShowUploadedResumes(null)}
+											<button
+												onClick={() =>
+													setShowUploadedResumes(null)
+												}
 												className="mt-2 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 w-full"
 											>
 												Close
@@ -408,7 +477,6 @@ const JobDescriptions = (setActiveTab) => {
 								</button>
 								<button
 									onClick={() => handleProcessResumes(job.id)}
-									
 									className="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-colors disabled:bg-green-300"
 								>
 									Process Resumes
@@ -431,7 +499,7 @@ const JobDescriptions = (setActiveTab) => {
 					onDelete={handleDeleteJobDescription}
 				/>
 			</Modal>
-			
+
 			{/* Upload Job Description Modal */}
 			{showModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -543,12 +611,14 @@ const JobDescriptions = (setActiveTab) => {
 					</div>
 				</div>
 			)}
-			
+
 			{/* Upload Resume Files Popover */}
 			{showUploadFile && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
 					<div className="bg-white rounded-lg p-6 w-full max-w-md">
-						<h2 className="text-xl font-semibold mb-4 text-black">Upload Resumes</h2>
+						<h2 className="text-xl font-semibold mb-4 text-black">
+							Upload Resumes
+						</h2>
 
 						<div className="mb-4">
 							<p className="text-sm text-gray-600 mb-2">

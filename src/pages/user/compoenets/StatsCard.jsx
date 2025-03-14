@@ -2,6 +2,8 @@ import React from 'react';
 import { Briefcase, FileText, Users, CheckCircle } from 'lucide-react';
 
 const StatsCard = ({ stat }) => {
+
+  
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="flex items-center">
