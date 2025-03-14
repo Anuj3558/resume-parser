@@ -33,9 +33,10 @@ const Navbar = () => {
 
   // Navigation items based on auth status
   const getNavItems = () => {
+    const role = JSON.parse(localStorage.getItem('user'))?.role
     if (isAuthenticated) {
       return [
-        { name: 'Dashboard', href: '/dashboard' },
+        { name: 'Dashboard', href: `/${role}-dashboard` },
         { name: 'Process Resume', href: '/res' },
         { name: 'Profile', href: '/profile' }
       ];
