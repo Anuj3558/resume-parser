@@ -85,16 +85,19 @@ export const JobDescriptions = () => {
   // 🔹 Open Modal for Editing
   const handleEditJob = (job) => {
     setCurrentJob(job);
+
     setIsModalOpen(true);
   };
 
   // 🔹 Open Side Panel for Viewing Job
   const handleViewJob = (job) => {
     setSelectedJob(job);
+    fetchRecruiters();
   };
 
   const handleAssignRecruiter = (job) => {
     if (!job) return; // Ensure job exists
+    fetchRecruiters();
     setSelectedJobForAssign(job);
     setIsAssignModalOpen(true);
     // setSelectedJobForAssign(job);
@@ -102,9 +105,10 @@ export const JobDescriptions = () => {
   };
   const handleDisassignRecruiter = async (job, recruiter) => {
     try {
+      console.log(job, recruiter);
       await axios.delete(
         process.env.REACT_APP_BACKEND_URL +
-          `/job/jobs/unassign/${job._id}/${recruiter._id}`
+          `/job/jobs/unassign/${job._id}/${recruiter.id}`
       );
     } catch (error) {
       openNotification("error", "Error", `Could not unassign user, ${error}`);
