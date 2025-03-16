@@ -17,7 +17,7 @@ import { notification } from "antd";
 import "antd/dist/reset.css";
 import useNotification from "../../../components/Notification";
 // import useNo from "../../../components/Notification";
-const JobDescriptions = ({setActiveTab}) => {
+const JobDescriptions = ({ setActiveTab }) => {
   const JOB_API_URL = `${BASE_URL}/job/jobs`;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,7 +36,7 @@ const JobDescriptions = ({setActiveTab}) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
   const [showUploadedResumes, setShowUploadedResumes] = useState(null);
   const [jobResumes, setJobResumes] = useState({});
-  const {contextHolder, openNotification} = useNotification()
+  const { contextHolder, openNotification } = useNotification();
   const handleSubmitJob = async (jobData) => {
     try {
       if (currentJob) {
@@ -111,7 +111,7 @@ const JobDescriptions = ({setActiveTab}) => {
         "info",
         "Info",
         "Please select at least one resume file to upload."
-      )
+      );
       // notification.info({
       //   message: "info",
       //   description: "Please select files to upload",
@@ -147,7 +147,7 @@ const JobDescriptions = ({setActiveTab}) => {
       // Update the local state with the uploaded resumes
       if (response.data.success) {
         // Get the updated job with new resume information
-        const updatedJob = response.data.job;
+        const updatedJob = response.data;
 
         // Update job resumes in local state
         setJobResumes({
@@ -156,11 +156,7 @@ const JobDescriptions = ({setActiveTab}) => {
         });
         alert("uploaded");
         // Show success message
-        openNotification(
-          "success",
-          "Success",
-          "Resume uploaded successfully",
-        )
+        openNotification("success", "Success", "Resume uploaded successfully");
         notification.success({
           message: "Success",
           description: `${resumeFiles.length} resume(s) uploaded successfully!`,
@@ -183,8 +179,7 @@ const JobDescriptions = ({setActiveTab}) => {
           "error",
           "Error",
           `Upload failed: ${error.response.data.error}`
-          
-        )
+        );
         // notification.error({
         //   message: "error",
         //   description: `Upload failed: ${error.response.data.error}`,
@@ -194,8 +189,7 @@ const JobDescriptions = ({setActiveTab}) => {
           "error",
           "Error",
           "Failed to upload resumes. Please try again."
-          
-        )
+        );
         // notification.error({
         //   message: "error",
         //   description: "Failed to upload resumes. Please try again.",
@@ -230,20 +224,19 @@ const JobDescriptions = ({setActiveTab}) => {
         openNotification(
           "success",
           "Success",
-          "Resumes processed successfully",
-        )
+          "Resumes processed successfully"
+        );
         notification.success({
           message: "Success",
           description:
             "All resumes processed successfully, please open Resume Evals to view them.",
-          placement: "topRight"
-        })
+          placement: "topRight",
+        });
         setTimeout(() => {
-          console.log("Changing tabs")
+          console.log("Changing tabs");
           setActiveTab("jobeval");
+        }, 1000);
 
-        }, 1000)
-       
         // Optionally, you can update the UI or refresh the job list
         // fetchJobs();
       } else {
@@ -251,8 +244,7 @@ const JobDescriptions = ({setActiveTab}) => {
           "error",
           "Error",
           "Something went wrong, unable to process resumes"
-          
-        )
+        );
         // notification.error({
         //   message: "error",
         //   description: "Failed to process resumes. Please try again.",
@@ -260,12 +252,7 @@ const JobDescriptions = ({setActiveTab}) => {
       }
     } catch (error) {
       console.error("Error processing resumes:", error);
-      openNotification(
-        "error",
-        "Error",
-        `Something went wrong, ${error}`
-        
-      )
+      openNotification("error", "Error", `Something went wrong, ${error}`);
       //comment for commit
       // notification.error({
       //   message: "error",
@@ -328,7 +315,6 @@ const JobDescriptions = ({setActiveTab}) => {
   }, [setIsModalOpen, isModalOpen]);
 
   return (
-  
     <div>
       {contextHolder}
       <div className="flex justify-between items-center mb-6">
@@ -457,12 +443,16 @@ const JobDescriptions = ({setActiveTab}) => {
                   {/* Resumes List Popover */}
                   {showUploadedResumes === job.id && (
                     <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-md shadow-lg p-3 z-10 w-64">
-
-                      <div className="flex justify-between items-start"> 
-                      <h4 className="font-medium text-gray-800 mb-2">
-                        Uploaded Resumes
-                      </h4>
-                      <div onClick={() => setShowUploadedResumes(false)} className="p-2 rounded-lg hover:bg-stone-100"><X size={16}/></div>
+                      <div className="flex justify-between items-start">
+                        <h4 className="font-medium text-gray-800 mb-2">
+                          Uploaded Resumes
+                        </h4>
+                        <div
+                          onClick={() => setShowUploadedResumes(false)}
+                          className="p-2 rounded-lg hover:bg-stone-100"
+                        >
+                          <X size={16} />
+                        </div>
                       </div>
                       {jobResumes[job.id] && jobResumes[job.id].length > 0 ? (
                         <ul className="max-h-40 overflow-y-auto">
@@ -683,7 +673,6 @@ const JobDescriptions = ({setActiveTab}) => {
                   <p className="text-xs text-gray-500">
                     PDF, DOC, DOCX up to 10MB each
                   </p>
-              
                 </div>
               </div>
             </div>
