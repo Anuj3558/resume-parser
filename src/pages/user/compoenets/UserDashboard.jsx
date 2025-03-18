@@ -39,19 +39,19 @@ const UserDashboard = () => {
 		},
 		{
 			title: "Job Descriptions",
-			value: analytics?.descriptions,
+			value: analytics.descriptions,
 			icon: <FileText size={24} />,
 			color: "bg-green-500",
 		},
 		{
 			title: "Candidates",
-			value: analytics?.candidates,
+			value: analytics.candidates,
 			icon: <Users size={24} />,
 			color: "bg-purple-500",
 		},
 		{
 			title: "Shortlisted",
-			value: analytics?.shortListed,
+			value: analytics.shortListed,
 			icon: <CheckCircle size={24} />,
 			color: "bg-yellow-500",
 		},
