@@ -33,25 +33,25 @@ const UserDashboard = () => {
 	const stats = [
 		{
 			title: "Job Categories",
-			value: analytics.categories,
+			value: analytics?.categories,
 			icon: <Briefcase size={24} />,
 			color: "bg-blue-500",
 		},
 		{
 			title: "Job Descriptions",
-			value: analytics.descriptions,
+			value: analytics?.descriptions,
 			icon: <FileText size={24} />,
 			color: "bg-green-500",
 		},
 		{
 			title: "Candidates",
-			value: analytics.candidates,
+			value: analytics?.candidates,
 			icon: <Users size={24} />,
 			color: "bg-purple-500",
 		},
 		{
 			title: "Shortlisted",
-			value: analytics.shortListed,
+			value: analytics?.shortListed,
 			icon: <CheckCircle size={24} />,
 			color: "bg-yellow-500",
 		},
@@ -64,7 +64,7 @@ const UserDashboard = () => {
 			{/* Stats Cards */}
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 				{stats.map((stat, index) => (
-					<StatsCard key={index} stat={stat} />
+					<StatsCard key={index} stat={stats} />
 				))}
 			</div>
 
