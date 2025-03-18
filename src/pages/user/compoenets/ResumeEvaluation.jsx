@@ -201,25 +201,20 @@ const ResumeEvaluation = () => {
             <span
               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs text-white border-2 border-white font-medium bg-blue-800`}
             >
-              {selectedResume.interest1}
+              {selectedResume.interest[0]}
             </span>
             <span
               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs text-white border-2 border-white font-medium bg-blue-800`}
             >
-              {selectedResume.interest2}
+              {selectedResume.interest[1]}
             </span>
-            <span
-              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs text-white border-2 border-white font-medium bg-blue-800`}
-            >
-              {selectedResume.interest3}
-            </span>
+           
             {/* Spacer */}
             <div className="my-4"></div>
             <p className="mt-2">
               <strong>Reason:</strong> {selectedResume.summary}
             </p>
 
-            <h4 className="mt-4 font-semibold">Evaluation Points:</h4>
         
 
             <button
